@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specta · Push down. Cards up.</title>
+<meta name="description" content="Specta pop-up cardholder in genuine leather with a Saffiano finish. €60, free shipping included, gift box included.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F4F1EC; --ink:#111111; --leather:#29282E; --terra:#B9643A;
+  --navy:#2D3A67; --brown:#B46E40; --grey:#8E8D91; --gift:#1E1611;
+  --line:rgba(17,17,17,.14); --line-inv:rgba(244,241,236,.16);
+  --muted:#4a4744; --muted-inv:rgba(244,241,236,.72);
+  --display:'Archivo',Helvetica,Arial,sans-serif;
+  --ui:'Inter Tight',system-ui,-apple-system,sans-serif;
+  --gut:clamp(16px,3.3vw,48px);
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);color:var(--ink);font:400 16px/1.5 var(--ui);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%;height:auto}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.d{font-family:var(--display);font-stretch:125%;font-weight:800;text-transform:uppercase;letter-spacing:-.02em;line-height:.86}
+.lab{font:600 12px/1.2 var(--ui);letter-spacing:.14em;text-transform:uppercase}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{padding-inline:var(--gut)}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:14px;height:56px;padding:0 28px;background:var(--ink);color:var(--paper);text-decoration:none;font:700 14px/1 var(--ui);letter-spacing:.12em;text-transform:uppercase;border-radius:0;transition:background .2s,transform .2s var(--ease)}
+.btn:hover{background:#000;transform:translateY(-1px)}
+.btn .ar{transition:transform .25s var(--ease)}
+.btn:hover .ar{transform:translateX(4px)}
+.btn--paper{background:var(--paper);color:var(--ink)}
+.btn--paper:hover{background:#fff}
+.link{font:700 13px/1 var(--ui);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:5px;display:inline-flex;gap:10px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.inv :focus-visible{outline-color:var(--paper)}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;inset:0 0 auto 0;z-index:50;height:60px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-inline:var(--gut);color:var(--ink);transition:background .25s,border-color .25s,color .25s;border-bottom:1px solid transparent}
+.hdr.solid{background:rgba(244,241,236,.97);border-bottom-color:var(--line);color:var(--ink)}
+.hdr nav{display:flex;gap:28px}
+.hdr nav a{text-decoration:none;font:600 12px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase}
+.hdr nav a:hover{text-decoration:underline;text-underline-offset:6px}
+.logo{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:21px;letter-spacing:.06em;text-decoration:none;display:flex;align-items:center;gap:10px}
+.logo svg{width:20px;height:20px}
+.hdr-r{display:flex;justify-content:flex-end;align-items:center;gap:22px}
+.hdr-r .note{font:500 12px/1 var(--ui);letter-spacing:.06em}
+.bag{display:flex;align-items:center;gap:8px;font:600 12px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;text-decoration:none}
+.bag svg{width:18px;height:18px}
+.hdr .shop{height:36px;padding:0 16px;font-size:12px;gap:8px}
+.burger{display:none;width:28px;height:28px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:var(--terra);height:clamp(700px,100vh,940px);overflow:hidden;isolation:isolate}
+.hero::after{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 50% 55% at 52% 48%,rgba(255,180,140,.16),transparent 70%),radial-gradient(ellipse 80% 40% at 50% 110%,rgba(80,25,10,.22),transparent 70%)}
+.hero h1{position:absolute;inset:0;z-index:1;pointer-events:none}
+.hero .big{position:absolute;font-size:18vw;line-height:.8;white-space:nowrap;color:var(--ink)}
+.hero .big.l1{left:calc(var(--gut) - .04em);top:84px}
+.hero .big.l2{right:calc(var(--gut) - .02em);bottom:76px}
+.hero .dot{color:var(--paper);display:inline-block}
+.hero .pd{position:absolute;right:var(--gut);top:110px;font-size:clamp(28px,3.1vw,46px);text-align:right}
+.hero .pd small{display:block;font:600 12px/1.2 var(--ui);letter-spacing:.14em;margin-bottom:14px}
+.wallet{position:absolute;z-index:2;left:50%;top:50%;width:min(397px,30vw);transform:translate(-46%,-50%) rotate(0deg);filter:drop-shadow(0 40px 40px rgba(60,18,6,.38))}
+.wallet img{width:100%}
+.shadow{position:absolute;z-index:1;left:50%;top:calc(50% + min(260px,19.6vw));width:min(300px,22vw);height:26px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(60,18,6,.45),transparent);filter:blur(4px)}
+.hero-copy{position:absolute;z-index:3;left:var(--gut);bottom:calc(76px + 18vw*.8 + 0px);max-width:380px}
+.hero-copy{bottom:auto;top:calc(84px + 18vw*.8 + 40px)}
+.hero-copy p{font:500 18px/1.42 var(--ui);margin-bottom:26px;color:var(--ink)}
+.hero-copy .fine{font:500 13px/1.4 var(--ui);margin:14px 0 0;letter-spacing:.02em}
+.hot{position:absolute;z-index:4;left:calc(50% + min(150px,11vw));top:calc(50% - min(60px,4.5vw))}
+.hot .pin{width:22px;height:22px;border-radius:50%;background:var(--paper);box-shadow:0 0 0 6px rgba(244,241,236,.35);position:relative}
+.hot .pin::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--paper);animation:ping 2.4s var(--ease) infinite}
+@keyframes ping{0%{transform:scale(.7);opacity:1}80%,100%{transform:scale(1.9);opacity:0}}
+.hot .tag{position:absolute;left:38px;top:-14px;background:var(--paper);padding:12px 16px 13px;white-space:nowrap;text-decoration:none;display:block;box-shadow:0 10px 30px rgba(40,12,4,.18)}
+.hot .tag::before{content:"";position:absolute;left:-16px;top:24px;width:16px;height:1px;background:var(--paper)}
+.hot .tag b{display:block;font:700 13px/1.2 var(--ui);letter-spacing:.06em;text-transform:uppercase}
+.hot .tag span{font:500 13px/1.3 var(--ui);color:var(--muted)}
+.hero-sw{position:absolute;z-index:3;left:var(--gut);bottom:76px;display:flex;gap:10px;align-items:center}
+.sw{width:22px;height:22px;border-radius:50%;border:2px solid var(--paper);display:block}
+.sw.k{background:#29282E}.sw.g{background:#8E8D91}.sw.n{background:#2D3A67}.sw.b{background:#B46E40}
+.hero-sw .lab{margin-left:8px}
+
+/* tape strip M1 */
+.tape{background:var(--ink);color:var(--paper);height:48px;display:flex;align-items:center;overflow:hidden;position:relative;z-index:5}
+.tape .run{display:flex;flex:none;gap:0;animation:run 38s linear infinite;white-space:nowrap}
+.tape span{font-family:var(--display);font-stretch:125%;font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding-right:28px}
+.tape i{font-style:normal;color:var(--terra);padding-right:28px;font-family:var(--display);font-weight:800}
+.hero .tape{position:absolute;left:0;right:0;bottom:0}
+@keyframes run{to{transform:translateX(-50%)}}
+
+/* hero intro motion (M2) */
+.wipe{clip-path:inset(0 100% 0 0);animation:wipe .9s var(--ease) forwards}
+.l1.wipe{animation-delay:.08s}.pd.wipe{animation-delay:.15s}.l2.wipe{animation-delay:.22s}
+.dot{transform:scale(0);animation:pop .5s cubic-bezier(.34,1.8,.5,1) .95s forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+@keyframes pop{to{transform:scale(1)}}
+.rise{opacity:0;transform:translateY(18px);animation:rise .8s var(--ease) .35s forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* phone hero image (hidden on desktop) */
+.hero-ph{display:none}
+
+/* ---------- colours (M8) ---------- */
+.cols-head{display:grid;grid-template-columns:1fr minmax(280px,420px);gap:40px;align-items:end;padding:120px var(--gut) 56px}
+.cols-head h2{font-size:clamp(46px,7.6vw,118px)}
+.cols-head p{font-size:17px;color:var(--muted)}
+.cols-head p b{color:var(--ink)}
+.tile{display:grid;grid-template-columns:1fr auto;align-items:stretch;min-height:500px;text-decoration:none;position:relative;overflow:hidden}
+.tile:nth-child(even){grid-template-columns:auto 1fr}
+.tile:nth-child(even) .tile-img{order:-1}
+.tile-txt{padding:44px var(--gut);display:flex;flex-direction:column;justify-content:space-between}
+.tile:nth-child(even) .tile-txt{align-items:flex-end;text-align:right}
+.tile-txt .top{display:flex;gap:16px;align-items:center}
+.tile:nth-child(even) .top{flex-direction:row-reverse}
+.letter{width:44px;height:44px;border:2px solid currentColor;border-radius:50%;display:grid;place-items:center;font:800 16px/1 var(--display);font-stretch:125%}
+.tile-name{font-size:clamp(64px,13vw,200px);transition:letter-spacing .5s var(--ease)}
+.tile:hover .tile-name{letter-spacing:.01em}
+.tile-foot{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.tile:nth-child(even) .tile-foot{flex-direction:row-reverse}
+.tile-foot .price{font:800 22px/1 var(--display);font-stretch:125%}
+.tile-img{width:403px;flex:none}
+.tile-img img{width:403px;height:500px;object-fit:cover}
+.t-black{background:var(--leather);color:var(--paper)}
+.t-grey{background:var(--grey);color:var(--ink)}
+.t-navy{background:var(--navy);color:var(--paper)}
+.t-brown{background:var(--brown);color:var(--ink)}
+.tile .arrow{display:inline-block;transition:transform .3s var(--ease)}
+.tile:hover .arrow{transform:translateX(8px)}
+
+/* ---------- still digging (M3 line + M4) ---------- */
+.dig{display:grid;grid-template-columns:1fr 1fr;min-height:760px}
+.dig-a{background:var(--ink);color:var(--paper);padding:110px var(--gut) 80px;display:flex;flex-direction:column;justify-content:space-between;gap:40px;position:relative;overflow:hidden}
+.dig-a h2{font-size:clamp(56px,7.4vw,112px)}
+.dig-a h2 em{font-style:normal;color:var(--terra)}
+.dig-a .last{font:500 19px/1.4 var(--ui);color:var(--muted-inv);max-width:360px}
+.dig-a .last b{color:var(--paper);font-weight:600}
+.flat{width:min(330px,70%);align-self:flex-end;margin-right:4%}
+.dig-b{background:var(--paper);padding:110px var(--gut) 80px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;gap:28px}
+.dig-b .lab{color:var(--muted)}
+.dig-b h3{font-size:clamp(40px,4.4vw,68px)}
+.dig-b figure{align-self:center;width:min(500px,100%)}
+.dig-b figure img{width:100%;mix-blend-mode:multiply}
+.dig-b .cap{font:500 18px/1.45 var(--ui);max-width:440px}
+
+/* ---------- lookbook ---------- */
+.look{padding:130px var(--gut) 120px;display:grid;grid-template-columns:5fr 3fr 3fr;gap:clamp(20px,2.6vw,40px);align-items:start}
+.look h2{font-size:clamp(52px,6.6vw,104px);margin-bottom:22px}
+.look .intro{font-size:17px;color:var(--muted);max-width:400px;margin-bottom:48px}
+.look figure{margin:0}
+.look figcaption{display:flex;justify-content:space-between;gap:12px;padding-top:12px;font:600 12px/1.3 var(--ui);letter-spacing:.12em;text-transform:uppercase}
+.look figcaption span{color:var(--muted);font-weight:500;letter-spacing:.06em;text-transform:none;font-size:13px}
+.look .c2{margin-top:230px;display:grid;gap:48px}
+.look .c3{margin-top:60px;display:grid;gap:48px}
+.look .c1 img{max-width:563px;width:100%}
+.look .c2 img,.look .c3 img{max-width:420px;width:100%}
+.look .shopbox{border-top:2px solid var(--ink);padding-top:22px}
+.look .shopbox p{font:500 16px/1.45 var(--ui);margin-bottom:22px;color:var(--muted)}
+.look .credit{font:500 12px/1.3 var(--ui);color:var(--muted);letter-spacing:.04em;margin-top:14px}
+
+/* ---------- billboard + search (M12) ---------- */
+.bill{background:var(--ink);color:var(--paper);display:grid;grid-template-columns:1fr minmax(0,460px);gap:clamp(40px,6vw,110px);padding:120px var(--gut);align-items:center;position:relative;overflow:hidden}
+.bill h2{font-size:clamp(52px,7vw,112px);margin-bottom:28px}
+.bill h2 em{font-style:normal;color:var(--terra)}
+.bill p{font-size:18px;color:var(--muted-inv);max-width:440px;margin-bottom:40px}
+.poster{position:relative;width:100%;max-width:460px;justify-self:end}
+.poster img{width:100%;box-shadow:0 40px 80px rgba(0,0,0,.5)}
+.poster .credit{font:500 12px/1.3 var(--ui);color:var(--muted-inv);margin-top:12px}
+.search{position:absolute;left:-150px;bottom:150px;width:min(470px,calc(100vw - 32px));background:#fff;color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.45);z-index:2}
+.search .bar{display:flex;align-items:center;gap:14px;height:62px;padding:0 20px;border-bottom:1px solid var(--line)}
+.search .bar svg{width:20px;height:20px;flex:none}
+.search .q{font:500 17px/1 var(--ui);white-space:nowrap;overflow:hidden}
+.search .caret{width:2px;height:22px;background:var(--terra);animation:blink 1s steps(1) infinite;flex:none}
+@keyframes blink{50%{opacity:0}}
+.search ul{list-style:none;opacity:0;transform:translateY(-6px);transition:opacity .4s,transform .4s var(--ease)}
+.search.done ul{opacity:1;transform:none}
+.search li{display:flex;align-items:center;gap:14px;padding:14px 20px;font:500 15px/1.2 var(--ui);color:var(--muted)}
+.search li svg{width:16px;height:16px;flex:none;opacity:.5}
+.search li.hit{background:#F4F1EC;color:var(--ink)}
+.search li.hit b{font-weight:700}
+.search li .pr{margin-left:auto;font:800 14px/1 var(--display);font-stretch:125%;color:var(--ink)}
+.search .who{padding:10px 20px 12px;font:500 11px/1.2 var(--ui);letter-spacing:.12em;text-transform:uppercase;color:#77726c;border-top:1px solid var(--line)}
+
+/* ---------- gift (M7) ---------- */
+.gift{background:var(--gift);color:var(--paper);padding:120px var(--gut) 120px;position:relative;overflow:hidden;isolation:isolate}
+.gift::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(ellipse 45% 55% at 52% 60%,rgba(214,128,56,.30),transparent 70%),radial-gradient(ellipse 60% 40% at 0% 0%,rgba(185,100,58,.14),transparent 70%)}
+.gift h2{font-size:clamp(60px,11.6vw,176px);margin-bottom:70px}
+.gift h2 .dot2{color:var(--terra)}
+.gift-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px) minmax(0,1fr);gap:clamp(24px,3.4vw,52px);align-items:end}
+.recipe{background:var(--paper);color:var(--ink);padding:34px 32px 30px;position:relative;max-width:420px;box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.recipe .lab{color:var(--muted);margin-bottom:10px}
+.recipe h3{font-size:30px;line-height:.92;margin-bottom:22px}
+.recipe dl{display:grid;grid-template-columns:auto 1fr;border-top:1px solid var(--line)}
+.recipe dt,.recipe dd{padding:11px 0;border-bottom:1px solid var(--line);font-size:15px}
+.recipe dt{font-weight:600;padding-right:22px}
+.recipe dd{text-align:right;color:var(--muted)}
+.recipe ol{margin:20px 0 0 18px;font-size:15px;line-height:1.55;color:var(--muted)}
+.recipe ol li::marker{font-weight:700;color:var(--ink)}
+.stamp{position:absolute;right:-26px;top:-34px;width:118px;height:118px;border-radius:50%;border:3px solid var(--terra);color:var(--terra);display:grid;place-items:center;text-align:center;transform:rotate(12deg);background:rgba(244,241,236,.0);font:800 13px/1.05 var(--display);font-stretch:125%;text-transform:uppercase;letter-spacing:.02em}
+.stamp::before{content:"";position:absolute;inset:6px;border:1px solid var(--terra);border-radius:50%}
+.gift-mood img{width:100%;max-width:440px}
+.gift-box{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.gift-box .print{background:#fff;padding:8px;width:min(320px,100%);box-shadow:0 30px 60px rgba(0,0,0,.35)}
+.gift-box .print img{width:100%}
+.gift-box p{font:500 16px/1.45 var(--ui);color:var(--muted-inv);max-width:320px}
+.gift-box p b{color:var(--paper);font-weight:600}
+.gift .credit{font:500 12px/1.3 var(--ui);color:var(--muted-inv);margin-top:12px}
+
+/* ---------- spec strip (M10) + maths (M5) ---------- */
+.strip{border-block:1px solid var(--ink);height:58px;display:flex;align-items:center;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.strip .run{display:flex;flex:none;animation:run 40s linear infinite;white-space:nowrap}
+.strip span{font:600 13px/1 var(--ui);letter-spacing:.16em;text-transform:uppercase;padding:0 22px;display:flex;align-items:center;gap:44px}
+.strip span::after{content:"";width:6px;height:6px;background:var(--terra);transform:rotate(45deg)}
+.maths-wrap{padding:0 var(--gut)}
+.maths{display:grid;grid-template-columns:minmax(0,550px) 1fr;gap:clamp(40px,7vw,120px);align-items:center;padding:110px 0 70px}
+.maths figure img{width:100%;mix-blend-mode:multiply}
+.maths h2{font-size:clamp(56px,7.4vw,112px);margin-bottom:16px}
+.maths .sub{font-size:17px;color:var(--muted);margin-bottom:34px;max-width:440px}
+.receipt{max-width:560px}
+.receipt .row{display:flex;align-items:baseline;gap:14px;padding:16px 0;border-bottom:1px solid var(--line);font:500 17px/1.2 var(--ui)}
+.receipt .row::after{content:"";order:1;flex:1;border-bottom:1px dotted rgba(17,17,17,.35);transform:translateY(-4px)}
+.receipt .row span:last-child{order:2;font-variant-numeric:tabular-nums;font-weight:600}
+.receipt .tot{border-bottom:3px solid var(--ink);padding:22px 0 18px}
+.receipt .tot span{font:800 34px/1 var(--display) !important;font-stretch:125% !important;text-transform:uppercase}
+.receipt .tot::after{border-bottom-style:solid;border-color:transparent}
+.receipt .note{font:500 13px/1.4 var(--ui);color:var(--muted);margin-top:14px}
+.specs{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);margin-bottom:110px}
+.specs div{padding:26px 26px 0 0;border-right:1px solid var(--line);margin-right:26px}
+.specs div:last-child{border-right:0;margin-right:0}
+.specs dt{font:600 12px/1.2 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.specs dd{font:600 19px/1.3 var(--ui)}
+
+/* ---------- ask specta (M11) ---------- */
+.ask{background:var(--leather);color:var(--paper);display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(40px,6vw,100px);padding:120px var(--gut)}
+.ask h2{font-size:clamp(56px,7.4vw,112px);margin-bottom:24px}
+.ask .side p{color:var(--muted-inv);font-size:17px;max-width:360px;margin-bottom:28px}
+.ask details{border-top:1px solid var(--line-inv)}
+.ask details:last-of-type{border-bottom:1px solid var(--line-inv)}
+.ask summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px 0;cursor:pointer;font:600 21px/1.3 var(--ui)}
+.ask summary::-webkit-details-marker{display:none}
+.ask summary i{flex:none;width:34px;height:34px;border:1.5px solid var(--line-inv);border-radius:50%;position:relative}
+.ask summary i::before,.ask summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:2px;background:var(--paper);transform:translate(-50%,-50%);transition:transform .3s var(--ease)}
+.ask summary i::after{transform:translate(-50%,-50%) rotate(90deg)}
+.ask details[open] summary i::after{transform:translate(-50%,-50%) rotate(0)}
+.ask details p{padding:0 60px 28px 0;color:var(--muted-inv);font-size:17px;max-width:640px}
+
+/* ---------- buy band ---------- */
+.buy{background:var(--terra);color:var(--ink);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;padding:110px var(--gut) 100px;position:relative;overflow:hidden;align-items:center}
+.buy h2{font-size:clamp(64px,10vw,160px)}
+.buy h2 .dot{color:var(--paper);transform:none;animation:none}
+.buy .lead{font:500 19px/1.45 var(--ui);max-width:470px;margin:28px 0 34px}
+.buy-prod{justify-self:center;position:relative;width:min(300px,60vw)}
+.buy-prod img{width:100%;filter:drop-shadow(0 34px 34px rgba(60,18,6,.35))}
+.picker{border:0;margin-bottom:22px}
+.picker legend{margin-bottom:14px}
+.picker .opts{display:flex;gap:10px;flex-wrap:wrap}
+.picker label{position:relative;cursor:pointer}
+.picker input{position:absolute;opacity:0;inset:0}
+.picker .pill{display:flex;align-items:center;gap:10px;height:46px;padding:0 18px 0 12px;border:1.5px solid rgba(17,17,17,.45);font:600 14px/1 var(--ui);letter-spacing:.04em;transition:border-color .2s,background .2s}
+.picker .pill .sw{width:20px;height:20px;border-color:rgba(244,241,236,.9)}
+.picker input:checked + .pill{border-color:var(--ink);background:rgba(244,241,236,.22);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.picker input:focus-visible + .pill{outline:3px solid var(--ink);outline-offset:2px}
+.buy .btn{width:100%;max-width:470px;height:62px;font-size:15px}
+.trust{margin-top:22px;max-width:470px}
+.pay{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pay span{height:28px;min-width:46px;padding:0 9px;border-radius:4px;background:#fff;color:#222;display:grid;place-items:center;font:700 11px/1 var(--ui);letter-spacing:.01em}
+.pay .ideal{color:#CC0066}
+.facts{list-style:none;display:flex;flex-wrap:wrap;gap:6px 20px;font:500 14px/1.4 var(--ui)}
+.facts li{display:flex;align-items:center;gap:8px}
+.facts li::before{content:"";width:5px;height:5px;background:var(--ink);border-radius:50%}
+.facts a{text-underline-offset:3px}
+.buy-tape{margin-top:0}
+
+/* ---------- footer ---------- */
+footer{background:var(--ink);color:var(--paper)}
+.f-top{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,.6fr));gap:40px;padding:90px var(--gut) 60px}
+.f-top h3{font:600 12px/1.2 var(--ui);letter-spacing:.14em;text-transform:uppercase;color:var(--muted-inv);margin-bottom:18px}
+.f-top ul{list-style:none;display:grid;gap:11px}
+.f-top li a{text-decoration:none;font-size:15px}
+.f-top li a:hover{text-decoration:underline}
+.news p{font-size:16px;color:var(--muted-inv);margin-bottom:20px;max-width:380px}
+.news form{display:flex;max-width:440px;border-bottom:2px solid var(--paper)}
+.news input{flex:1;min-width:0;background:transparent;border:0;color:var(--paper);font:500 16px/1 var(--ui);height:52px;outline:none}
+.news input::placeholder{color:rgba(244,241,236,.55)}
+.news button{font:700 13px/1 var(--ui);letter-spacing:.14em;text-transform:uppercase;padding:0 0 0 16px;display:flex;align-items:center;gap:10px}
+.news small{display:block;margin-top:12px;font-size:12px;color:var(--muted-inv)}
+.f-word{font-size:clamp(70px,18.2vw,280px);line-height:.78;padding:0 var(--gut);margin-top:10px;white-space:nowrap;overflow:hidden;color:var(--paper);letter-spacing:-.03em}
+.f-bot{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:26px var(--gut) 30px;border-top:1px solid var(--line-inv);margin-top:34px;font:500 13px/1.4 var(--ui);color:var(--muted-inv)}
+.f-bot a{text-decoration:none}
+
+/* reveal (below the fold only) */
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* ---------- phone ---------- */
+@media (max-width:760px){
+  .hdr{height:56px;grid-template-columns:auto 1fr auto;color:var(--paper)}
+  .hdr.solid{color:var(--ink)}
+  .hdr nav,.hdr-r .note,.hdr .shop{display:none}
+  .burger{display:block}
+  .burger svg{width:28px;height:28px}
+  .logo{justify-self:center;font-size:18px}
+  .hdr-r{gap:0}
+  .hero{background:#000;height:auto;color:var(--paper);padding-bottom:0}
+  .hero::after{display:none}
+  .hero-ph{display:block;width:100%;height:min(560px,128vw);object-fit:cover;object-position:50% 30%}
+  .wallet,.shadow,.hot,.hero-sw,.hero .pd{display:none}
+  .hero h1{position:relative;inset:auto;padding:0 16px;margin-top:-64px;color:var(--paper)}
+  .hero .big{position:static;display:block;font-size:17.4vw;color:var(--paper);line-height:.84}
+  .hero .ph-pd{display:block;font-size:7.4vw;margin-bottom:12px}
+  .hero-copy{position:static;max-width:none;padding:22px 16px 28px}
+  .hero-copy p{color:var(--muted-inv);font-size:16px;margin-bottom:20px}
+  .hero-copy .btn{width:100%}
+  .hero-copy .fine{color:var(--muted-inv)}
+  .hero .tape{position:static}
+  .cols-head{grid-template-columns:1fr;gap:14px;padding:72px 16px 32px}
+  .tile,.tile:nth-child(even){grid-template-columns:1fr 44%;min-height:0}
+  .tile:nth-child(even) .tile-img{order:0}
+  .tile:nth-child(even) .tile-txt{align-items:flex-start;text-align:left}
+  .tile:nth-child(even) .top,.tile:nth-child(even) .tile-foot{flex-direction:row}
+  .tile-txt{padding:20px 16px}
+  .tile-img,.tile-img img{width:100%}
+  .tile-img img{height:100%;aspect-ratio:1127/1400}
+  .tile-name{font-size:12.6vw}
+  .letter{width:34px;height:34px;font-size:13px}
+  .tile-foot{gap:10px;flex-direction:column;align-items:flex-start !important}
+  .tile-foot .lab{font-size:11px}
+  .tile-foot .price{font-size:18px}
+  .dig{grid-template-columns:1fr}
+  .dig-a,.dig-b{padding:72px 16px 56px}
+  .flat{width:220px;align-self:center;margin:0}
+  .look{grid-template-columns:1fr 1fr;padding:80px 16px 72px;gap:16px}
+  .look .c1{grid-column:1/-1}
+  .look .c2,.look .c3{margin-top:0;gap:28px}
+  .look .c3{margin-top:60px}
+  .look .intro{margin-bottom:28px}
+  .bill{grid-template-columns:1fr;padding:80px 16px 96px;gap:40px}
+  .poster{justify-self:center;max-width:358px}
+  .search{position:relative;left:auto;bottom:auto;margin:-120px auto 0;width:calc(100% - 16px)}
+  .gift{padding:80px 16px}
+  .gift h2{margin-bottom:44px}
+  .gift-grid{grid-template-columns:1fr;gap:40px}
+  .stamp{right:-6px;top:-40px;width:96px;height:96px;font-size:11px}
+  .gift-mood img{max-width:none}
+  .maths{grid-template-columns:1fr;padding:64px 0 48px;gap:24px}
+  .specs{grid-template-columns:1fr 1fr;margin-bottom:72px}
+  .specs div{margin-right:0;padding:20px 14px 20px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .specs div:nth-child(odd){border-right:1px solid var(--line);margin-right:14px}
+  .specs dd{font-size:16px}
+  .ask{grid-template-columns:1fr;padding:80px 16px;gap:20px}
+  .ask summary{font-size:18px;padding:22px 0}
+  .ask details p{padding-right:0}
+  .buy{grid-template-columns:1fr;padding:80px 16px 64px;gap:28px}
+  .buy-prod{order:-1;width:200px}
+  .buy .lead{font-size:17px}
+  .f-top{grid-template-columns:1fr 1fr;padding:64px 16px 40px;gap:36px 20px}
+  .news{grid-column:1/-1}
+  .f-word{font-size:19.6vw}
+}
+@media (min-width:761px){.ph-pd{display:none}}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .wipe{clip-path:none}.dot{transform:none}.rise{opacity:1;transform:none}.rv{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <nav aria-label="Main">
+    <a href="#colours">Colours</a>
+    <a href="#gift">Gift</a>
+    <a href="#maths">Details</a>
+    <a href="#ask">Ask Specta</a>
+  </nav>
+  <button class="burger" aria-label="Menu"><svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 9h20M4 19h20"/></svg></button>
+  <a class="logo" href="#top" aria-label="Specta home">
+    <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4h10l4 4H8v3h9v5H3v-4h10V9H3z" fill="currentColor"/></svg>SPECTA</a>
+  <div class="hdr-r">
+    <span class="note">€60 · Free shipping included</span>
+    <a class="btn shop" href="#buy">Shop <span class="ar">→</span></a>
+    <a class="bag" href="#buy" aria-label="Bag, 0 items"><svg viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h12l-1 10H4z"/><path d="M6 6V4.5a3 3 0 0 1 6 0V6"/></svg><span class="cnt">0</span></a>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- 1 HERO (M2 + M1) -->
+<section class="hero" aria-label="Specta pop-up cardholder">
+  <img class="hero-ph" src="img/cat-hero-phone-black.jpg" width="781" height="1400" alt="Black Specta cardholder with seven cards risen in a stepped stack, on black.">
+  <h1>
+    <span class="d ph-pd">Push down.</span>
+    <span class="d pd wipe"><small>One press.</small>Push down.</span>
+    <span class="d big l1 wipe">Cards</span>
+    <span class="d big l2 wipe">up<span class="dot">.</span></span>
+  </h1>
+  <div class="shadow" aria-hidden="true"></div>
+  <div class="wallet"><img src="img/hero-wallet-black.webp" width="794" height="947" alt="Black Specta cardholder in genuine leather, cards rising out of the top."></div>
+  <div class="hot rise">
+    <div class="pin" aria-hidden="true"></div>
+    <a class="tag" href="#buy"><b>Specta · Black</b><span>€60 · free shipping included</span></a>
+  </div>
+  <div class="hero-copy rise">
+    <p>Push down on the side ledge and up to seven cards rise in a stepped stack.</p>
+    <a class="btn" href="#buy">Shop Black — €60 <span class="ar">→</span></a>
+    <p class="fine">Genuine leather, Saffiano finish. Gift box included.</p>
+  </div>
+  <div class="hero-sw rise" aria-label="Colours">
+    <a class="sw k" href="#c-black" aria-label="Black"></a><a class="sw g" href="#c-grey" aria-label="Grey"></a><a class="sw n" href="#c-navy" aria-label="Navy"></a><a class="sw b" href="#c-brown" aria-label="Brown"></a>
+    <span class="lab">Four colours · one price</span>
+  </div>
+  <div class="tape" aria-label="€60, free shipping included, 30-day returns">
+    <div class="run" aria-hidden="true"></div>
+  </div>
+</section>
+
+<!-- 2 COLOURS (M8) -->
+<section id="colours" aria-labelledby="col-h">
+  <div class="cols-head">
+    <h2 class="d rv" id="col-h">Which one<br>is yours?</h2>
+    <p class="rv">Four colours of genuine leather with a Saffiano finish. <b>A, B, C or D. Every one is €60.</b></p>
+  </div>
+  <div class="tiles">
+    <a class="tile t-black" id="c-black" href="/products/specta?variant=black">
+      <div class="tile-txt"><div class="top"><span class="letter">A</span><span class="lab">Leather black</span></div>
+        <div><div class="d tile-name">Black</div></div>
+        <div class="tile-foot"><span class="price">€60</span><span class="lab">Shop Black <span class="arrow">→</span></span></div></div>
+      <div class="tile-img"><img src="img/cat-tile-black.jpg" width="1127" height="1400" loading="lazy" alt="Hand holding the black Specta, cards up, on a café street."></div>
+    </a>
+    <a class="tile t-grey" id="c-grey" href="/products/specta?variant=grey">
+      <div class="tile-txt"><div class="top"><span class="letter">B</span><span class="lab">Leather grey</span></div>
+        <div><div class="d tile-name">Grey</div></div>
+        <div class="tile-foot"><span class="price">€60</span><span class="lab">Shop Grey <span class="arrow">→</span></span></div></div>
+      <div class="tile-img"><img src="img/cat-tile-grey.jpg" width="1127" height="1400" loading="lazy" alt="Hand holding the grey Specta, cards up, on a café street."></div>
+    </a>
+    <a class="tile t-navy" id="c-navy" href="/products/specta?variant=navy">
+      <div class="tile-txt"><div class="top"><span class="letter">C</span><span class="lab">Leather navy</span></div>
+        <div><div class="d tile-name">Navy</div></div>
+        <div class="tile-foot"><span class="price">€60</span><span class="lab">Shop Navy <span class="arrow">→</span></span></div></div>
+      <div class="tile-img"><img src="img/cat-tile-navy.jpg" width="1127" height="1400" loading="lazy" alt="Hand holding the navy Specta, cards up, on a café street."></div>
+    </a>
+    <a class="tile t-brown" id="c-brown" href="/products/specta?variant=brown">
+      <div class="tile-txt"><div class="top"><span class="letter">D</span><span class="lab">Leather brown</span></div>
+        <div><div class="d tile-name">Brown</div></div>
+        <div class="tile-foot"><span class="price">€60</span><span class="lab">Shop Brown <span class="arrow">→</span></span></div></div>
+      <div class="tile-img"><img src="img/cat-tile-brown.jpg" width="1127" height="1400" loading="lazy" alt="Hand holding the brown Specta, cards up, on a café street."></div>
+    </a>
+  </div>
+</section>
+
+<!-- 3 STILL DIGGING (M3 line + M4) -->
+<section class="dig" aria-labelledby="dig-h">
+  <div class="dig-a inv">
+    <div>
+      <p class="lab" style="color:var(--muted-inv);margin-bottom:22px">Before</p>
+      <h2 class="d rv" id="dig-h">Still<br>digging<em>?</em></h2>
+    </div>
+    <svg class="flat rv" viewBox="0 0 330 300" fill="none" aria-hidden="true">
+      <!-- a flat stack: every card flush, only the top one reachable -->
+      <rect x="40" y="70" width="250" height="210" rx="16" stroke="#F4F1EC" stroke-width="10"/>
+      <path d="M40 120h250" stroke="#F4F1EC" stroke-width="10"/>
+      <rect x="68" y="44" width="194" height="40" rx="6" fill="#111" stroke="#F4F1EC" stroke-width="10"/>
+      <path d="M150 20v-2M176 26l6-8M124 26l-6-8" stroke="#B9643A" stroke-width="8" stroke-linecap="round"/>
+      <text x="165" y="214" text-anchor="middle" fill="#B9643A" font-family="Archivo" font-stretch="125%" font-weight="800" font-size="72">?</text>
+    </svg>
+    <p class="last rv"><b>Last seen: the bottom of your wallet.</b> One card on top, the rest somewhere underneath.</p>
+  </div>
+  <div class="dig-b">
+    <div>
+      <p class="lab" style="margin-bottom:22px">After · one press</p>
+      <h3 class="d rv">Every card.<br>One press.</h3>
+    </div>
+    <figure class="rv"><img src="img/studio-navy-front-cards-up.jpg" width="1100" height="1100" loading="lazy" alt="Navy Specta with seven cards risen in a stepped stack, every edge showing."></figure>
+    <p class="cap">Push down on the side ledge and up to seven cards rise in a stepped stack.</p>
+  </div>
+</section>
+
+<!-- 4 LOOKBOOK -->
+<section class="look" aria-labelledby="look-h">
+  <div class="c1">
+    <h2 class="d rv" id="look-h">Out and<br>about.</h2>
+    <p class="intro rv">A cardholder for the front pocket, the café table and the walk home. Shown here in all four colours.</p>
+    <figure class="rv"><img src="img/cat-life-1.jpg" width="1127" height="1400" loading="lazy" alt="Man in a cream sweater holding a black Specta with cards up."><figcaption>Every card. One press. <span>Black</span></figcaption></figure>
+  </div>
+  <div class="c2">
+    <figure class="rv"><img src="img/cat-life-3.jpg" width="1127" height="1400" loading="lazy" alt="Brown Specta sliding into a front trouser pocket."><figcaption>Front pocket. <span>Brown</span></figcaption></figure>
+    <figure class="rv"><img src="img/cat-about-3.jpg" width="1127" height="1400" loading="lazy" alt="All four Specta colours lined up in a car boot at golden hour."><figcaption>All four. <span>Black · Grey · Navy · Brown</span></figcaption></figure>
+  </div>
+  <div class="c3">
+    <figure class="rv"><img src="img/cat-life-5.jpg" width="1127" height="1400" loading="lazy" alt="Black Specta tossed above an open hand on a city street."><figcaption>Out the door. <span>Black</span></figcaption></figure>
+    <div class="shopbox rv">
+      <p>One product. Four colours. One price, with free shipping and the gift box included.</p>
+      <a class="btn" href="#buy">Shop Specta — €60 <span class="ar">→</span></a>
+      <p class="credit">Campaign imagery.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 BILLBOARD + SEARCH (M12) -->
+<section class="bill inv" aria-labelledby="bill-h">
+  <div>
+    <p class="lab" style="color:var(--muted-inv);margin-bottom:22px">The campaign</p>
+    <h2 class="d rv" id="bill-h">Looking<br>for this<em>?</em></h2>
+    <p class="rv">A wallet where you can see every card. Genuine leather, Saffiano finish, four colours, one price.</p>
+    <a class="btn btn--paper" href="#buy">Shop Specta — €60 <span class="ar">→</span></a>
+  </div>
+  <div class="poster">
+    <img src="img/cat-wall-1.jpg" width="1127" height="1400" loading="lazy" alt="Campaign poster on a city building: WALLETS ARE BACK, SPECTA, with the black cardholder.">
+    <div class="search" id="search" role="img" aria-label="Someone typing: wallet where I can see every card. Suggestion: specta.">
+      <div class="bar"><svg viewBox="0 0 20 20" fill="none" stroke="#111" stroke-width="2"><circle cx="8.5" cy="8.5" r="6"/><path d="M13 13l5 5"/></svg><span class="q" id="q"></span><span class="caret"></span></div>
+      <ul>
+        <li class="hit"><svg viewBox="0 0 16 16" fill="none" stroke="#111" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg><span><b>specta</b> pop-up cardholder</span><span class="pr">€60</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="#111" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg><span><b>specta</b> navy</span></li>
+        <li><svg viewBox="0 0 16 16" fill="none" stroke="#111" stroke-width="1.8"><circle cx="7" cy="7" r="5"/><path d="M11 11l4 4"/></svg><span><b>specta</b> gift box</span></li>
+      </ul>
+      <div class="who">Someone, typing</div>
+    </div>
+    <p class="credit">Campaign artwork.</p>
+  </div>
+</section>
+
+<!-- 6 GIFT (M7) -->
+<section class="gift inv" id="gift" aria-labelledby="gift-h">
+  <p class="lab" style="color:var(--muted-inv);margin-bottom:24px">For someone else</p>
+  <h2 class="d rv" id="gift-h">Ready to<br>give<span class="dot2">.</span></h2>
+  <div class="gift-grid">
+    <div class="recipe rv">
+      <div class="stamp">Ready<br>to give</div>
+      <p class="lab">Recipe card</p>
+      <h3 class="d">Recipe for<br>a good gift</h3>
+      <dl>
+        <dt>Serves</dt><dd>1</dd>
+        <dt>Difficulty</dt><dd>Easy</dd>
+        <dt>Gift box</dt><dd>Included</dd>
+        <dt>Shipping</dt><dd>Free, included</dd>
+        <dt>Price</dt><dd>€60</dd>
+      </dl>
+      <ol>
+        <li>Pick their colour: Black, Grey, Navy or Brown.</li>
+        <li>Order. It arrives in its gift box.</li>
+        <li>Hand it over. Watch them push down.</li>
+      </ol>
+    </div>
+    <div class="gift-mood rv">
+      <img src="img/cat-gift-1.jpg" width="1127" height="1400" loading="lazy" alt="Two hands holding a black Specta with cards up in warm amber light.">
+      <p class="credit">Campaign imagery.</p>
+    </div>
+    <div class="gift-box rv">
+      <div class="print"><img src="img/studio-black-gift-box.jpg" width="1100" height="1100" loading="lazy" alt="The real Specta gift box, open, with the black cardholder inside."></div>
+      <p><b>The real box.</b> Every Specta ships in this gift box. It's included in the €60, like the shipping.</p>
+      <a class="btn btn--paper" href="#buy">Shop a gift — €60 <span class="ar">→</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- 7 SPEC STRIP (M10) + THE MATHS (M5) -->
+<section id="maths" aria-labelledby="maths-h">
+  <div class="strip" aria-label="Genuine leather, Saffiano finish, up to seven cards, RFID-blocking, four colours, gift box included, free shipping included, EU only, 30-day returns">
+    <div class="run" aria-hidden="true"></div>
+  </div>
+  <div class="maths-wrap">
+    <div class="maths">
+      <figure class="rv"><img src="img/hp-saffiano-four-colours.jpg" width="1100" height="1100" loading="lazy" alt="Four Saffiano leathers fanned out: grey, brown, navy and black."></figure>
+      <div>
+        <h2 class="d rv" id="maths-h">The maths<span style="color:var(--terra)">.</span></h2>
+        <p class="sub rv">No codes, no add-ons at checkout. This is the whole bill.</p>
+        <div class="receipt rv" role="table" aria-label="Price breakdown">
+          <div class="row" role="row"><span role="cell">Specta cardholder</span><span role="cell">60.00</span></div>
+          <div class="row" role="row"><span role="cell">Shipping</span><span role="cell">Included</span></div>
+          <div class="row" role="row"><span role="cell">Gift box</span><span role="cell">Included</span></div>
+          <div class="row" role="row"><span role="cell">Returns</span><span role="cell">30 days</span></div>
+          <div class="row tot" role="row"><span role="cell">Total</span><span role="cell">€60.00</span></div>
+          <p class="note">Delivery within the EU only.</p>
+        </div>
+      </div>
+    </div>
+    <dl class="specs">
+      <div><dt>Material</dt><dd>Genuine leather, Saffiano finish</dd></div>
+      <div><dt>Cards</dt><dd>Up to seven rise in a stepped stack</dd></div>
+      <div><dt>RFID-blocking</dt><dd>Helps block wireless skimming</dd></div>
+      <div><dt>Colours</dt><dd>Black, Grey, Navy, Brown</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- 8 ASK SPECTA (M11) -->
+<section class="ask inv" id="ask" aria-labelledby="ask-h">
+  <div class="side">
+    <h2 class="d rv" id="ask-h">Ask<br>Specta.</h2>
+    <p>Real questions, straight answers. Something missing? We reply within 2 working days.</p>
+    <a class="link" href="/pages/contact">Contact us <span>→</span></a>
+  </div>
+  <div class="qa">
+    <details open><summary>How many cards fit?<i></i></summary><p>Up to seven, depending on how thick your cards are. Push down on the side ledge and they rise in a stepped stack, so you see every edge.</p></details>
+    <details><summary>Can I carry cash or coins?<i></i></summary><p>Specta is made for cards. If you carry coins or a big stack of notes, it isn't the right wallet for you.</p></details>
+    <details><summary>What does RFID-blocking do?<i></i></summary><p>It helps block wireless skimming of the contactless cards inside. It's one layer of protection, not a guarantee against every kind of fraud.</p></details>
+    <details><summary>What does delivery cost?<i></i></summary><p>Nothing extra. Free shipping is included in the €60. We deliver within the EU only.</p></details>
+    <details><summary>Can I return it?<i></i></summary><p>Yes. You have 30 days to return it.</p></details>
+    <details><summary>Why are there no reviews yet?<i></i></summary><p>Specta is new. We'd rather show no reviews than made-up ones. Real reviews will appear here once customers write them.</p></details>
+  </div>
+</section>
+
+<!-- 9 BUY BAND + M1 + TRUST -->
+<section class="buy" id="buy" aria-labelledby="buy-h">
+  <div>
+    <p class="lab" style="margin-bottom:22px">Specta pop-up cardholder</p>
+    <h2 class="d" id="buy-h">€60<span class="dot">.</span><br>All in.</h2>
+    <p class="lead">Genuine leather, Saffiano finish. Free shipping and the gift box included.</p>
+    <form onsubmit="return false">
+      <fieldset class="picker">
+        <legend class="lab">Colour: <span id="cname">Black</span></legend>
+        <div class="opts">
+          <label><input type="radio" name="c" value="Black" checked><span class="pill"><span class="sw k"></span>Black</span></label>
+          <label><input type="radio" name="c" value="Grey"><span class="pill"><span class="sw g"></span>Grey</span></label>
+          <label><input type="radio" name="c" value="Navy"><span class="pill"><span class="sw n"></span>Navy</span></label>
+          <label><input type="radio" name="c" value="Brown"><span class="pill"><span class="sw b"></span>Brown</span></label>
+        </div>
+      </fieldset>
+      <button class="btn" type="submit" id="buybtn">Add Black to bag — €60 <span class="ar">→</span></button>
+    </form>
+    <div class="trust">
+      <div class="pay" role="group" aria-label="Accepted payment methods"><span class="ideal">iDEAL</span><span>Bancontact</span><span>Apple Pay</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+      <ul class="facts"><li><a href="/policies/refund-policy">30-day returns</a></li><li>We reply within 2 working days</li><li><a href="/pages/contact">Contact us</a></li></ul>
+    </div>
+  </div>
+  <div class="buy-prod"><img src="img/hero-wallet-black.webp" width="794" height="947" loading="lazy" alt="Black Specta cardholder, cards up."></div>
+</section>
+<div class="tape" aria-label="€60, free shipping included, 30-day returns"><div class="run" aria-hidden="true"></div></div>
+
+</main>
+
+<footer class="inv">
+  <div class="f-top">
+    <div class="news">
+      <h3>Letters from Specta</h3>
+      <p>A short note when there's something worth saying. No discount codes, ever.</p>
+      <form onsubmit="this.querySelector('button').textContent='Thanks';return false"><label class="sr" for="em">Email address</label><input id="em" type="email" placeholder="Your email address" autocomplete="email"><button type="submit">Sign up <span>→</span></button></form>
+      <small>Unsubscribe in one click.</small>
+    </div>
+    <div><h3>Shop</h3><ul><li><a href="#c-black">Black</a></li><li><a href="#c-grey">Grey</a></li><li><a href="#c-navy">Navy</a></li><li><a href="#c-brown">Brown</a></li><li><a href="#gift">As a gift</a></li></ul></div>
+    <div><h3>Help</h3><ul><li><a href="#ask">Ask Specta</a></li><li><a href="/policies/shipping-policy">Shipping (EU)</a></li><li><a href="/policies/refund-policy">30-day returns</a></li><li><a href="/pages/contact">Contact us</a></li></ul></div>
+    <div><h3>Specta</h3><ul><li><a href="/pages/about">About</a></li><li><a href="/policies/privacy-policy">Privacy</a></li><li><a href="/policies/terms-of-service">Terms</a></li></ul></div>
+  </div>
+  <div class="d f-word" aria-hidden="true">Specta</div>
+  <div class="f-bot"><span>© 2026 Specta · shopspecta.com</span><span>€60 · Free shipping included · 30-day returns · EU only</span></div>
+</footer>
+
+<script>
+(function(){
+  // tape strips (M1) + spec strip (M10)
+  var tape='<span>€60</span><i>●</i><span>Free shipping included</span><i>●</i><span>30-day returns</span><i>●</i>';
+  document.querySelectorAll('.tape .run').forEach(function(r){r.innerHTML=tape.repeat(8)});
+  var facts=['Genuine leather','Saffiano finish','Up to seven cards','RFID-blocking','Black · Grey · Navy · Brown','Gift box included','Free shipping included','EU only','30-day returns'];
+  var s=facts.map(function(f){return '<span>'+f+'</span>'}).join('');
+  document.querySelectorAll('.strip .run').forEach(function(r){r.innerHTML=s+s});
+
+  // header turns solid on scroll (N1)
+  var h=document.getElementById('hdr');
+  function hs(){h.classList.toggle('solid',window.scrollY>8)}
+  hs();addEventListener('scroll',hs,{passive:true});
+
+  // reveal below the fold
+  var rv=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px'});
+    rv.forEach(function(el){io.observe(el)});
+  } else rv.forEach(function(el){el.classList.add('in')});
+
+  // search bar (M12): a person typing, then the suggestion
+  var box=document.getElementById('search'),q=document.getElementById('q'),txt='wallet where I can see every card…',started=false;
+  function type(){if(started)return;started=true;var i=0;(function step(){q.textContent=txt.slice(0,++i);if(i<txt.length)setTimeout(step,55);else setTimeout(function(){box.classList.add('done')},350)})()}
+  if('IntersectionObserver' in window){new IntersectionObserver(function(es,o){if(es[0].isIntersecting){type();o.disconnect()}}).observe(box)} else type();
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches){q.textContent=txt;box.classList.add('done')}
+
+  // colour picker updates the buy button (M8)
+  var btn=document.getElementById('buybtn'),cn=document.getElementById('cname');
+  document.querySelectorAll('.picker input').forEach(function(i){i.addEventListener('change',function(){cn.textContent=i.value;btn.firstChild.textContent='Add '+i.value+' to bag — €60 '})});
+})();
+</script>
+</body>
+</html>

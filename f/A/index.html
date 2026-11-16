@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specta · Push down. Cards up.</title>
+<meta name="description" content="Specta pop-up leather cardholder. Push down on the side ledge and up to seven cards rise in a stepped stack. €60, free shipping included, gift box included.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500;700&family=Saira+Extra+Condensed:wght@800;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#0B1120; --ground-2:#141D33; --navy:#2D3A67; --navy-hi:#46588F;
+  --accent:#C9773F; --accent-2:#E9A46A; --ice:#F1EEE8; --ice-m:rgba(241,238,232,.68); --ice-s:rgba(241,238,232,.45);
+  --line:rgba(241,238,232,.12); --line-2:rgba(241,238,232,.22);
+  --display:"Saira Extra Condensed", "Arial Narrow", sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, monospace;
+  --body:"Inter Tight", system-ui, sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+  --gut:clamp(16px,5.4vw,88px);
+  --c-black:#2A2A2E; --c-grey:#8E8D91; --c-navy:#3A4A86; --c-brown:#B46E40;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--ground);color:var(--ice);font:400 17px/1.55 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent-2);outline-offset:3px}
+.mono{font-family:var(--mono);font-weight:500;font-size:11.5px;letter-spacing:.2em;text-transform:uppercase}
+.label{color:var(--accent-2)}
+.wrap{padding-inline:var(--gut);max-width:1440px;margin-inline:auto}
+.display{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.84;letter-spacing:.005em}
+.dot{color:var(--accent);display:inline-block}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(11,17,32,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr .wrap{height:64px;display:flex;align-items:center;gap:40px}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:900;font-size:30px;letter-spacing:.06em;line-height:1}
+.logo svg{width:22px;height:22px}
+.nav{display:flex;gap:30px;margin-left:12px}
+.nav a{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ice-m);transition:color .2s}
+.nav a:hover{color:var(--ice)}
+.hdr-r{margin-left:auto;display:flex;align-items:center;gap:22px}
+.hdr-r .mono{color:var(--ice-m)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;background:var(--accent);color:var(--ground);font-family:var(--mono);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase;border:0;border-radius:999px;padding:0 26px;height:48px;cursor:pointer;position:relative;overflow:hidden;white-space:nowrap;transition:transform .25s var(--ease),background .2s}
+.btn::after{content:"";position:absolute;inset:0 auto 0 -60%;width:40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:skewX(-18deg);transition:left .8s var(--ease)}
+.btn:hover{background:#D6874F}.btn:hover::after{left:120%}
+.btn.sm{height:38px;padding:0 18px;font-size:11.5px}
+.btn.xl{height:64px;padding:0 34px;font-size:15px}
+.btn .arr{font-family:var(--body);font-weight:600;font-size:18px;letter-spacing:0}
+.btn-ghost{display:inline-flex;align-items:center;gap:10px;height:48px;padding:0 22px;border:1px solid var(--line-2);border-radius:999px;font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ice);transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:var(--ice-m);background:rgba(241,238,232,.04)}
+.menu{display:none;width:40px;height:40px;border:1px solid var(--line-2);border-radius:50%;background:none;align-items:center;justify-content:center}
+.menu i{display:block;width:14px;height:1.5px;background:var(--ice);box-shadow:0 5px 0 var(--ice)}
+
+/* side rail */
+.rail{position:fixed;left:36px;top:64px;bottom:0;width:1px;background:var(--line);z-index:40;pointer-events:none}
+.rail span{position:absolute;top:50%;left:-7px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--ice-s);background:var(--ground);padding:14px 0;text-transform:uppercase}
+
+/* registration marks */
+.reg{position:absolute;width:15px;height:15px;pointer-events:none;opacity:.55}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--ice)}
+.reg::before{left:7px;top:0;width:1px;height:15px}.reg::after{top:7px;left:0;height:1px;width:15px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;display:grid;grid-template-columns:46% 54%;height:calc(100svh - 64px);min-height:760px;max-height:920px;overflow:hidden;
+  background:
+   radial-gradient(ellipse 80% 45% at 8% -10%,rgba(45,58,103,.85),transparent 55%),
+   var(--ground)}
+.hero-l{position:relative;z-index:3;display:flex;flex-direction:column;padding:44px 24px 44px calc(var(--gut) + 8px)}
+.hero-meta{display:flex;align-items:center;gap:18px}
+.hero-meta .count{color:var(--ice);border:1px solid var(--line-2);border-radius:999px;padding:6px 12px}
+.hero-mid{margin-block:auto;padding-block:20px}
+.h1{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.84;font-size:clamp(84px,9.4vw,146px);letter-spacing:.004em}
+.h1 .ln{display:block;overflow:hidden;padding-bottom:.02em;white-space:nowrap}
+.h1 .ln>span{display:inline-block;animation:wipe .62s var(--ease) both}
+.h1 .ln:nth-child(2)>span{animation-delay:.08s}
+.h1 .grad{background:linear-gradient(120deg,var(--accent-2) 10%,var(--accent) 75%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.h1 .pop{color:var(--accent-2);-webkit-text-fill-color:var(--accent-2);display:inline-block;animation:pop .6s var(--ease) .72s both;transform-origin:30% 80%}
+@keyframes wipe{from{transform:translate3d(0,108%,0)}to{transform:none}}
+@keyframes pop{0%{transform:scale(.2);opacity:0;text-shadow:none}55%{transform:scale(1.28);opacity:1;text-shadow:0 0 26px rgba(233,164,106,.9)}100%{transform:scale(1);text-shadow:0 0 0 rgba(233,164,106,0)}}
+.lead{max-width:430px;margin-top:26px;color:var(--ice-m);font-size:18px;line-height:1.5;animation:rise .8s var(--ease) .2s both}
+.lead b{color:var(--ice);font-weight:500}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.hero-buy{display:flex;align-items:flex-end;gap:22px;flex-wrap:wrap;animation:rise .8s var(--ease) .32s both}
+.bug{position:relative;display:inline-flex;flex-direction:column;justify-content:center;padding:10px 26px 8px;border-radius:16px;background:linear-gradient(180deg,#18223D,#0F172C);box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 0 0 1px var(--line)}
+.bug::before,.bug::after{content:"";position:absolute;top:10px;bottom:10px;width:5px;border-radius:3px;background:var(--accent);animation:breathe 2.4s ease-in-out infinite}
+.bug::before{left:0}.bug::after{right:0}
+@keyframes breathe{50%{opacity:.55}}
+.bug .mono{font-size:9.5px;letter-spacing:.14em;color:var(--accent-2)}
+.bug .val{font-family:var(--display);font-weight:900;font-size:76px;line-height:.9;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.btn.hero-cta{height:66px;padding:0 34px;font-size:14.5px;margin-bottom:6px;
+  box-shadow:0 0 0 1px rgba(241,238,232,.1),-6px 7px 0 -1px rgba(233,164,106,.9),6px 7px 0 -1px var(--navy-hi),0 22px 44px -22px rgba(0,0,0,.7)}
+.btn.hero-cta:hover{transform:translateY(-2px)}
+.tape{display:inline-flex;align-items:center;gap:12px;margin-top:30px;align-self:flex-start;padding:9px 18px;background:rgba(233,164,106,.92);color:var(--ground);font-family:var(--mono);font-weight:700;font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;transform:rotate(-1.6deg);box-shadow:0 8px 20px -10px rgba(0,0,0,.6);
+  -webkit-mask:linear-gradient(90deg,transparent 0,#000 6px,#000 calc(100% - 6px),transparent);
+  clip-path:polygon(0 8%,2% 0,98% 4%,100% 0,99% 92%,100% 100%,1% 96%,0 100%)}
+.tape i{width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.6;font-style:normal}
+
+.hero-r{position:relative;z-index:1}
+.key{position:absolute;inset:0;background:
+  radial-gradient(circle at 62% 50%,rgba(201,119,63,.28),transparent 46%),
+  radial-gradient(ellipse 70% 55% at 60% 108%,rgba(201,119,63,.22),transparent 60%)}
+.lens{position:absolute;width:820px;height:820px;left:calc(56% - 410px + 180px);top:50%;margin-top:-410px;border-radius:50%;border:2px solid rgba(201,119,63,.85)}
+.lens::before{content:"";position:absolute;inset:26px;border-radius:50%;border:1px solid rgba(241,238,232,.12)}
+.lens::after{content:"";position:absolute;inset:-14px;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(241,238,232,.5) 0 .25deg,transparent .25deg 6deg);
+  -webkit-mask:radial-gradient(circle,transparent calc(50% - 7px),#000 calc(50% - 6px),#000 50%,transparent 50%);mask:radial-gradient(circle,transparent calc(50% - 7px),#000 calc(50% - 6px),#000 50%,transparent 50%)}
+.prod{position:absolute;left:56%;top:50%;width:300px;margin-left:-150px;margin-top:-318px;z-index:2}
+.prod img{width:300px;animation:float 7s ease-in-out infinite;filter:drop-shadow(0 30px 40px rgba(0,0,0,.55))}
+.prod .shadow{position:absolute;left:50%;bottom:-26px;width:250px;height:30px;margin-left:-125px;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.75),transparent 70%);animation:shrink 7s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+@keyframes shrink{50%{transform:scaleX(.82);opacity:.7}}
+.cam{position:absolute;z-index:3;left:5%;bottom:9%;width:176px;padding:8px;border-radius:12px;background:#0A0F1C;box-shadow:0 0 0 1px var(--line-2),0 30px 50px -20px rgba(0,0,0,.8);transform:rotate(-2deg)}
+.cam img{width:160px;height:200px;object-fit:cover;object-position:50% 35%;border-radius:6px}
+.cam .mono{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.14em;color:var(--ice-m);padding:8px 2px 2px}
+.cam .mono b{color:var(--accent-2);font-weight:500}
+.hero-r .tag{position:absolute;z-index:3;font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--ice-m);display:flex;align-items:center;gap:10px}
+.hero-r .tag::before{content:"";width:28px;height:1px;background:var(--accent-2)}
+.t1{top:24%;left:5%}
+.t2{top:34%;left:5%}
+.phone-hero{display:none}
+
+/* ---------- diagonal ticker seam ---------- */
+.seam{position:relative;height:300px;margin-top:-120px;z-index:4;overflow:hidden;pointer-events:none;
+  background:linear-gradient(171deg,transparent 0 49.6%,var(--ground-2) 49.7%)}
+.band{position:absolute;left:-10%;right:-10%;top:50%;height:66px;margin-top:-33px;transform:rotate(-9deg);background:var(--accent);color:var(--ground);display:flex;align-items:center;overflow:hidden;box-shadow:0 20px 40px -20px rgba(0,0,0,.7);pointer-events:auto}
+.band::before,.band::after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--accent-2)}
+.band::before{top:-12px}.band::after{bottom:-10px;height:2px;background:var(--navy-hi)}
+.band-wrap{position:absolute;left:-10%;right:-10%;top:50%;transform:rotate(-9deg)}
+.ghost1,.ghost2{position:absolute;left:-10%;right:-10%;top:50%;transform:rotate(-9deg)}
+.ghost1{height:2px;margin-top:-52px;background:var(--accent-2);opacity:.9}
+.ghost2{height:1px;margin-top:48px;background:var(--navy-hi)}
+.track{display:flex;width:max-content;animation:tick 40s linear infinite;
+  -webkit-mask:linear-gradient(90deg,transparent,#000 26px,#000 calc(100% - 26px),transparent)}
+.track span{font-family:var(--display);font-weight:800;font-size:30px;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;padding-right:34px;display:flex;align-items:center;gap:34px}
+.track span::after{content:"";width:8px;height:8px;background:var(--ground);transform:rotate(45deg)}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+/* ---------- sections ---------- */
+section{position:relative}
+.sec{padding-block:100px}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:34px}
+.sec-head .n{color:var(--ice);border:1px solid var(--line-2);border-radius:999px;padding:5px 11px}
+.sec-head .rule{flex:0 0 40px;height:1px;background:var(--accent-2)}
+.h2{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.86;font-size:clamp(56px,7vw,112px)}
+.h3{font-family:var(--display);font-weight:800;text-transform:uppercase;line-height:.9;font-size:clamp(34px,3.2vw,48px)}
+.p{color:var(--ice-m);max-width:520px}
+.reveal{opacity:1}
+.fx-on .reveal{opacity:0;transform:translateY(24px);transition:opacity .6s var(--ease),transform .6s var(--ease);transition-delay:calc(var(--i,0)*70ms)}
+.fx-on .reveal.in{opacity:1;transform:none}
+
+/* 02 search interlude */
+.search-sec{background:var(--ground-2);padding-block:30px 96px;margin-top:-1px}
+.search-grid{display:grid;grid-template-columns:5fr 7fr;gap:64px;align-items:center}
+.search-box{position:relative;background:var(--ice);color:var(--ground);border-radius:34px;box-shadow:0 40px 80px -40px rgba(0,0,0,.8),0 0 0 8px rgba(241,238,232,.05)}
+.search-in{display:flex;align-items:center;gap:18px;height:84px;padding:0 30px;font-size:24px;font-weight:500;letter-spacing:-.01em}
+.search-in svg{flex:none;width:26px;height:26px;opacity:.55}
+.search-in .typed{white-space:nowrap;overflow:hidden}
+.caret{width:2px;height:30px;background:var(--accent);animation:blink 1s steps(1) infinite;flex:none;margin-left:-14px}
+@keyframes blink{50%{opacity:0}}
+.suggest{border-top:1px solid rgba(11,17,32,.1);padding:10px 0 14px}
+.suggest a{display:flex;align-items:center;gap:18px;padding:12px 30px;font-size:19px;color:rgba(11,17,32,.55)}
+.suggest a svg{width:18px;height:18px;opacity:.4;flex:none}
+.suggest a.hit{background:rgba(201,119,63,.14);color:var(--ground)}
+.suggest a.hit b{font-weight:600}
+.suggest a.hit .go{margin-left:auto;font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;background:var(--ground);color:var(--ice);border-radius:999px;padding:7px 12px}
+.search-note{margin-top:22px;color:var(--ice-s)}
+
+/* 03 wanted lower third */
+.wanted{background:var(--ground-2);padding-bottom:96px}
+.screen{position:relative;border-radius:22px;overflow:hidden;min-height:480px;background:
+  radial-gradient(ellipse 60% 70% at 78% 30%,rgba(45,58,103,.9),transparent 70%),
+  radial-gradient(circle at 20% 110%,rgba(201,119,63,.18),transparent 50%),#0A0F1D;box-shadow:0 0 0 1px var(--line)}
+.screen::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px);pointer-events:none}
+.screen .corner{position:absolute;top:26px;left:30px;right:30px;display:flex;justify-content:space-between;color:var(--ice-m)}
+.screen .corner b{color:var(--accent-2);font-weight:500}
+.ghost-word{position:absolute;right:-1%;top:46px;font-family:var(--display);font-weight:900;font-size:clamp(140px,22vw,330px);line-height:.8;color:transparent;-webkit-text-stroke:1.5px rgba(241,238,232,.10);text-transform:uppercase;letter-spacing:.01em}
+.cardstack{position:absolute;right:9%;top:120px;width:300px;height:250px}
+.cardstack i{position:absolute;left:0;width:260px;height:160px;border-radius:14px;border:1.5px solid rgba(241,238,232,.28);background:linear-gradient(140deg,rgba(241,238,232,.07),rgba(241,238,232,.02))}
+.cardstack i:nth-child(1){top:0;left:40px;border-color:var(--accent-2);background:linear-gradient(140deg,rgba(233,164,106,.22),rgba(201,119,63,.05))}
+.cardstack i:nth-child(2){top:16px;left:32px}.cardstack i:nth-child(3){top:32px;left:24px}.cardstack i:nth-child(4){top:48px;left:16px}.cardstack i:nth-child(5){top:64px;left:8px}.cardstack i:nth-child(6){top:80px;left:0;height:190px;border:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.035) 0 1px,transparent 1px 5px),repeating-linear-gradient(-45deg,rgba(255,255,255,.035) 0 1px,transparent 1px 5px),linear-gradient(160deg,#34437A,#222D55);box-shadow:0 30px 50px -20px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.12)}
+.cardstack .wl{position:absolute;left:24px;top:240px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ice-m);text-transform:uppercase}
+.cardstack .q{position:absolute;left:44px;top:-24px;font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--accent-2)}
+.cardstack .found{position:absolute;left:-150px;top:-20px;display:flex;align-items:center;gap:10px;color:var(--ice-m)}
+.cardstack .found::after{content:"";width:110px;height:1px;background:var(--accent-2)}
+.l3{position:absolute;left:30px;right:30px;bottom:34px}
+.l3-top{display:flex;align-items:stretch}
+.l3-tag{background:var(--accent);color:var(--ground);font-family:var(--display);font-weight:900;font-size:clamp(40px,4.6vw,70px);line-height:1;padding:12px 22px 6px;text-transform:uppercase}
+.l3-name{background:var(--ice);color:var(--ground);font-family:var(--display);font-weight:900;font-size:clamp(40px,4.6vw,70px);line-height:1;padding:12px 28px 6px;text-transform:uppercase;flex:0 1 auto}
+.l3-sub{display:inline-flex;gap:28px;flex-wrap:wrap;background:var(--navy);padding:13px 22px;color:var(--ice);font-family:var(--mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+.l3-sub b{color:var(--accent-2);font-weight:500}
+.wanted-foot{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;margin-top:34px}
+.tears{display:flex;gap:0;border:1px dashed var(--line-2);border-radius:12px;overflow:hidden}
+.tear{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;padding:16px 8px;border:0;background:none;border-right:1px dashed var(--line-2);cursor:pointer;transition:background .2s}
+.tear:last-child{border-right:0}
+.tear:hover{background:rgba(233,164,106,.08)}
+.tear b{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:.04em;text-transform:uppercase}
+.tear span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--ice-s);text-transform:uppercase}
+.tear.done{background:rgba(201,119,63,.2)}
+.tear.done span{color:var(--accent-2)}
+
+/* 04 replay */
+.replay{background:var(--ground)}
+.replay-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;margin-bottom:52px}
+.monitors{display:grid;grid-template-columns:1fr 1fr;gap:28px;position:relative;max-width:1040px;margin-inline:auto}
+.mon{position:relative;border-radius:18px;padding:12px;background:#080C17;box-shadow:0 0 0 1px var(--line-2),0 40px 70px -40px rgba(0,0,0,.9)}
+.mon img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:10px;max-width:550px;margin-inline:auto}
+.mon .bar{display:flex;justify-content:space-between;align-items:center;padding:14px 6px 4px;color:var(--ice-m)}
+.mon .bar b{color:var(--accent-2);font-weight:500}
+.mon .frame{position:absolute;top:28px;left:28px;background:rgba(11,17,32,.88);color:var(--ice);padding:7px 12px;border-radius:6px}
+.mon .frame.hot{background:var(--accent);color:var(--ground);font-weight:700}
+.press{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);z-index:3;width:104px;height:104px;border-radius:50%;background:var(--ground);box-shadow:0 0 0 1px var(--accent-2),0 0 0 10px rgba(11,17,32,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:2px}
+.press b{font-family:var(--display);font-weight:900;font-size:24px;line-height:.9;text-transform:uppercase}
+.press .mono{font-size:9px;color:var(--accent-2);letter-spacing:.16em}
+.replay-cap{display:grid;grid-template-columns:auto 1fr auto;gap:30px;align-items:center;margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+.replay-cap .h3 em{font-style:normal;color:var(--accent-2)}
+.side-mon{display:flex;align-items:center;gap:16px;padding:8px 18px 8px 8px;border-radius:14px;background:#080C17;box-shadow:0 0 0 1px var(--line)}
+.side-mon img{width:74px;height:74px;object-fit:cover;border-radius:8px}
+.side-mon .mono{font-size:10px;line-height:1.7;color:var(--ice-m)}
+.side-mon .mono b{color:var(--accent-2);font-weight:500;display:block}
+
+/* 05 lineup */
+.lineup{background:var(--ground-2)}
+.lu-head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px;margin-bottom:48px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.tile{display:block;border-radius:18px;overflow:hidden;background:#0A0F1C;box-shadow:0 0 0 1px var(--line);transition:transform .35s var(--ease),box-shadow .35s}
+.tile:hover{transform:translateY(-6px);box-shadow:0 0 0 1px var(--accent-2),0 30px 60px -30px rgba(0,0,0,.9)}
+.tile figure{position:relative;aspect-ratio:4/5;overflow:hidden}
+.tile img{width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.tile:hover img{transform:scale(1.035)}
+.tile .letter{position:absolute;top:14px;left:14px;width:40px;height:40px;border-radius:50%;background:rgba(11,17,32,.82);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:24px;backdrop-filter:blur(6px)}
+.pill{position:relative;display:flex;align-items:center;justify-content:space-between;margin:12px;padding:12px 20px;border-radius:12px;background:linear-gradient(180deg,#18223D,#0F172C);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.pill::before,.pill::after{content:"";position:absolute;top:8px;bottom:8px;width:5px;border-radius:3px;background:var(--c)}
+.pill::before{left:0}.pill::after{right:0}
+.pill b{font-family:var(--display);font-weight:900;font-size:30px;line-height:1;text-transform:uppercase;letter-spacing:.02em}
+.pill .mono{font-size:10.5px;color:var(--ice-m)}
+.pill .mono em{font-style:normal;color:var(--accent-2)}
+
+/* 06 scoreboard */
+.score{background:var(--ground);overflow:hidden}
+.score::before{content:"";position:absolute;inset:0;background:
+  repeating-linear-gradient(45deg,rgba(241,238,232,.018) 0 1px,transparent 1px 7px),
+  repeating-linear-gradient(-45deg,rgba(241,238,232,.018) 0 1px,transparent 1px 7px);pointer-events:none}
+.score-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:center;position:relative}
+.flap{display:flex;gap:12px;margin:34px 0 30px}
+.flap span{position:relative;width:clamp(96px,10vw,150px);height:clamp(132px,13.6vw,204px);border-radius:12px;background:linear-gradient(180deg,#1A2440 0 50%,#141D33 50%);box-shadow:0 0 0 1px var(--line),0 24px 40px -24px rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:clamp(100px,11vw,168px);line-height:1;color:var(--ice);font-variant-numeric:tabular-nums;overflow:hidden}
+.flap span.gold{background:linear-gradient(180deg,#E9A46A 0 50%,#DB9056 50%);color:var(--ground)}
+.flap span::after{content:"";position:absolute;left:0;right:0;top:50%;height:2px;margin-top:-1px;background:rgba(11,17,32,.85)}
+.flap span::before{content:"";position:absolute;top:50%;width:8px;height:16px;margin-top:-8px;left:-4px;border-radius:4px;background:var(--ground);box-shadow:calc(clamp(96px,10vw,150px)) 0 0 var(--ground)}
+.flap span.flip{animation:flip .09s linear}
+@keyframes flip{50%{transform:scaleY(.86)}}
+.bars{display:grid;gap:10px;max-width:520px}
+.bars div{display:grid;grid-template-columns:150px 1fr;align-items:center;gap:16px;color:var(--ice-m)}
+.bars i{height:6px;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+.ticket{position:relative;background:var(--ice);color:var(--ground);border-radius:20px;padding:34px 34px 28px;font-family:var(--mono);font-size:14px;letter-spacing:.06em;text-transform:uppercase;transform:rotate(1.2deg);box-shadow:0 50px 80px -40px rgba(0,0,0,.95);
+  -webkit-mask:radial-gradient(circle 12px at 0 66%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 12px at 100% 66%,#0000 98%,#000) right/51% 100% no-repeat;
+  mask:radial-gradient(circle 12px at 0 66%,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 12px at 100% 66%,#0000 98%,#000) right/51% 100% no-repeat}
+.ticket .tk-top{display:flex;justify-content:space-between;align-items:center;padding-bottom:18px;border-bottom:1px solid rgba(11,17,32,.14);margin-bottom:12px}
+.ticket .tk-top b{font-family:var(--display);font-weight:900;font-size:30px;letter-spacing:.06em}
+.ticket .tk-top span{font-size:10.5px;letter-spacing:.18em;opacity:.6}
+.row{display:flex;align-items:baseline;gap:10px;padding:9px 0}
+.row .lead-dots{flex:1;border-bottom:2px dotted rgba(11,17,32,.28);transform:translateY(-4px)}
+.row em{font-style:normal;color:#9A5427;font-weight:700}
+.total{display:flex;justify-content:space-between;align-items:baseline;margin-top:20px;padding-top:22px;border-top:2px dashed rgba(11,17,32,.3)}
+.total span{font-size:13px;letter-spacing:.2em;font-weight:700}
+.total b{font-family:var(--display);font-weight:900;font-size:64px;line-height:.8;letter-spacing:.01em}
+.barcode{height:44px;margin-top:22px;background:repeating-linear-gradient(90deg,var(--ground) 0 2px,transparent 2px 4px,var(--ground) 4px 7px,transparent 7px 9px,var(--ground) 9px 10px,transparent 10px 14px);opacity:.85;border-radius:2px}
+.tk-foot{display:flex;justify-content:space-between;margin-top:10px;font-size:10px;letter-spacing:.18em;opacity:.55}
+
+/* 07 gift */
+.gift{background:
+  radial-gradient(ellipse 60% 70% at 70% 55%,rgba(201,119,63,.30),transparent 62%),
+  radial-gradient(ellipse 50% 50% at 0% 100%,rgba(233,164,106,.12),transparent 60%),#120F14;overflow:hidden}
+.gift-grid{display:grid;grid-template-columns:.95fr 1.05fr;gap:64px;align-items:center}
+.gift .h2 .grad2{color:var(--accent-2)}
+.recipe{position:relative;margin-top:40px;max-width:500px;background:#F4EEE2;color:#1D1A22;border-radius:6px;padding:28px 30px 26px;transform:rotate(-1.2deg);box-shadow:0 30px 60px -30px rgba(0,0,0,.9);
+  background-image:linear-gradient(rgba(29,26,34,.06) 1px,transparent 1px);background-size:100% 30px;background-position:0 64px}
+.recipe h4{font-family:var(--display);font-weight:900;font-size:34px;line-height:.9;text-transform:uppercase}
+.recipe .meta{display:flex;gap:18px;flex-wrap:wrap;margin:12px 0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#7A4A28}
+.recipe ol{list-style:none;counter-reset:s;font-size:15.5px;line-height:30px}
+.recipe li{counter-increment:s;display:flex;gap:12px}
+.recipe li::before{content:counter(s,decimal-leading-zero);font-family:var(--mono);font-size:11px;color:#9A5427;line-height:30px}
+.stamp{position:absolute;right:-26px;top:-30px;width:132px;height:132px;border-radius:50%;border:3px solid #B5532E;color:#B5532E;display:flex;align-items:center;justify-content:center;text-align:center;font-family:var(--display);font-weight:900;font-size:24px;line-height:.9;text-transform:uppercase;transform:rotate(14deg);background:rgba(244,238,226,.9)}
+.stamp::before{content:"";position:absolute;inset:6px;border-radius:50%;border:1px dashed #B5532E}
+.gift-pics{position:relative;height:600px}
+.gift-main{position:absolute;right:0;top:0;width:min(440px,78%);border-radius:16px;overflow:hidden;box-shadow:0 50px 90px -40px rgba(0,0,0,.95),0 0 0 1px rgba(233,164,106,.25)}
+.gift-main img{width:100%;aspect-ratio:4/5;object-fit:cover}
+.gift-main .mono{position:absolute;right:16px;top:14px;background:rgba(11,17,32,.8);padding:7px 11px;border-radius:6px;color:var(--ice-m);font-size:10px}
+.polaroid{position:absolute;left:0;bottom:0;width:min(300px,52%);background:#FBF8F1;padding:12px 12px 44px;border-radius:3px;transform:rotate(-4deg);box-shadow:0 40px 60px -30px rgba(0,0,0,.95)}
+.polaroid img{width:100%;aspect-ratio:1/1;object-fit:cover}
+.polaroid span{position:absolute;left:0;right:0;bottom:12px;text-align:center;color:#1D1A22;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase}
+.polaroid::before{content:"";position:absolute;top:-16px;left:50%;width:120px;height:32px;margin-left:-60px;background:rgba(242,194,126,.85);transform:rotate(3deg)}
+
+/* 08 ask */
+.ask{background:var(--ground)}
+.ask-grid{display:grid;grid-template-columns:1fr 1.25fr;gap:72px;align-items:start}
+.lines{border-top:1px solid var(--line)}
+.lines details{border-bottom:1px solid var(--line)}
+.lines summary{list-style:none;display:grid;grid-template-columns:86px 1fr 34px;align-items:center;gap:12px;padding:22px 0;cursor:pointer}
+.lines summary::-webkit-details-marker{display:none}
+.lines summary .mono{color:var(--accent-2)}
+.lines summary b{font-family:var(--display);font-weight:800;font-size:30px;line-height:1;text-transform:uppercase;letter-spacing:.01em}
+.lines summary i{width:34px;height:34px;border-radius:50%;border:1px solid var(--line-2);position:relative}
+.lines summary i::before,.lines summary i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1.5px;margin:-.75px 0 0 -6px;background:var(--ice);transition:transform .3s var(--ease)}
+.lines summary i::after{transform:rotate(90deg)}
+.lines details[open] summary i::after{transform:rotate(0)}
+.lines details[open] summary i{background:var(--accent);border-color:var(--accent)}
+.lines details[open] summary i::before,.lines details[open] summary i::after{background:var(--ground)}
+.lines .ans{padding:0 46px 24px 98px;color:var(--ice-m);max-width:640px}
+.callin{margin-top:36px;padding:26px;border-radius:18px;background:var(--ground-2);box-shadow:0 0 0 1px var(--line)}
+.callin .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.callin .top .mono:last-child{color:var(--ice-s)}
+.field{display:block;margin-bottom:12px}
+.field span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ice-m);margin-bottom:7px}
+.field input,.field textarea{width:100%;background:#0A0F1C;border:1px solid var(--line-2);border-radius:10px;padding:13px 15px;font-size:16px;color:var(--ice);transition:border-color .2s}
+.field textarea{height:96px;resize:vertical}
+.field input::placeholder,.field textarea::placeholder{color:var(--ice-s)}
+.field input:focus,.field textarea:focus{outline:0;border-color:var(--accent-2)}
+.callin .send{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:6px}
+.callin .send p{font-size:13.5px;color:var(--ice-s)}
+.callin .ok{display:none;color:var(--accent-2)}
+.callin.sent form{display:none}.callin.sent .ok{display:block}
+
+/* 09 buy band */
+.buy{background:
+  radial-gradient(ellipse 55% 80% at 78% 60%,rgba(201,119,63,.26),transparent 60%),
+  linear-gradient(180deg,var(--ground-2),var(--ground));overflow:hidden;padding-block:110px 90px}
+.buy-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+.buy .h2{font-size:clamp(68px,9vw,148px)}
+.swatches{display:flex;gap:10px;flex-wrap:wrap;margin:34px 0 24px}
+.sw{display:flex;align-items:center;gap:10px;height:46px;padding:0 18px 0 8px;border-radius:999px;border:1px solid var(--line-2);background:rgba(11,17,32,.5);cursor:pointer;font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;transition:border-color .2s,background .2s}
+.sw i{width:30px;height:30px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.sw[aria-pressed="true"]{border-color:var(--accent-2);background:rgba(233,164,106,.1)}
+.buy-row{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.buy-row .price{font-family:var(--display);font-weight:900;font-size:64px;line-height:.9}
+.tape.flat{transform:rotate(-1deg);margin-top:26px}
+.trust{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:12px 34px;margin-top:34px;padding-top:26px;border-top:1px solid var(--line);color:var(--ice-m);font-size:14.5px}
+.trust div{display:flex;align-items:center;gap:10px}
+.trust svg{width:18px;height:18px;flex:none;color:var(--accent-2)}
+.trust a{text-decoration:underline;text-underline-offset:3px;text-decoration-color:var(--line-2)}
+.pays{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.pay{height:30px;padding:0 11px;border-radius:6px;background:var(--ice);color:var(--ground);display:inline-flex;align-items:center;font:600 12.5px/1 var(--body);letter-spacing:.01em}
+.pay.ideal b{color:#CC0066}
+.buy-pic{position:relative;justify-self:center;width:min(420px,100%)}
+.buy-pic .frame{position:relative;border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(233,164,106,.3),0 60px 100px -50px rgba(0,0,0,1)}
+.buy-pic img{width:100%;aspect-ratio:4/5;object-fit:cover;transition:opacity .35s}
+.buy-pic .lab{position:absolute;left:16px;top:16px;background:rgba(11,17,32,.85);padding:8px 12px;border-radius:6px}
+.buy-pic .ring{position:absolute;width:560px;height:560px;left:50%;top:50%;margin:-280px 0 0 -280px;border:1.5px solid rgba(201,119,63,.55);border-radius:50%;z-index:-1}
+
+/* footer */
+.ftr{background:#080C17;border-top:1px solid var(--line);padding-block:72px 34px}
+.ftr-grid{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:40px}
+.ftr .big{font-family:var(--display);font-weight:900;font-size:64px;line-height:.85;text-transform:uppercase;margin:18px 0 14px}
+.ftr .big .dot{color:var(--accent-2)}
+.ftr h5{font-family:var(--mono);font-weight:500;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent-2);margin-bottom:16px}
+.ftr ul{list-style:none;display:grid;gap:10px;color:var(--ice-m);font-size:15px}
+.ftr ul a:hover{color:var(--ice)}
+.ftr-strip{margin-top:56px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;color:var(--ice-s)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,40px);opacity:0;z-index:90;background:var(--ice);color:var(--ground);padding:12px 18px;border-radius:999px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;transition:all .35s var(--ease);pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- tablet / phone ---------- */
+@media (max-width:1100px){
+  .nav{display:none}
+  .rail{display:none}
+  .t1,.t2{display:none}
+}
+@media (max-width:900px){
+  body{font-size:16px}
+  .hdr .wrap{height:58px;gap:12px}
+  .logo{font-size:26px}
+  .hdr-r{gap:10px}.hdr-r .mono{display:none}
+  .menu{display:flex}
+  .hero{display:block;height:auto;min-height:0;max-height:none}
+  .hero-l{padding:22px var(--gut) 0}
+  .hero-meta .lbl-long{display:none}
+  .hero-mid{margin:0;padding:18px 0 0}
+  .h1{font-size:clamp(70px,21.5vw,110px)}
+  .lead{font-size:16px;margin-top:16px}
+  .hero-buy{margin-top:22px;gap:14px;flex-wrap:nowrap;align-items:stretch}
+  .bug{padding:6px 18px 4px;border-radius:12px}
+  .bug .val{font-size:52px}
+  .btn.hero-cta{flex:1;height:auto;min-height:62px;padding:0 18px;font-size:13px;margin:0 6px 7px 0}
+  .tape{margin-top:22px;font-size:10px;padding:8px 13px;gap:8px}
+  .hero-r{display:none}
+  .phone-hero{display:block;position:relative;margin:26px var(--gut) 0;height:420px;border-radius:22px;overflow:hidden;background:#000;box-shadow:0 0 0 1px var(--line)}
+  .phone-hero img{width:100%;height:100%;object-fit:cover;object-position:50% 58%}
+  .phone-hero .ring{position:absolute;width:440px;height:440px;right:-230px;top:50%;margin-top:-220px;border-radius:50%;border:2px solid rgba(201,119,63,.85)}
+  .phone-hero .mono{position:absolute;left:14px;bottom:14px;background:rgba(11,17,32,.82);padding:7px 10px;border-radius:6px;font-size:9.5px;color:var(--ice-m)}
+  .phone-hero .mono b{color:var(--accent-2);font-weight:500}
+  .seam{height:130px;margin-top:-30px;background:linear-gradient(171deg,transparent 0 49.4%,var(--ground-2) 49.5%)}
+  .band{height:48px;margin-top:-24px}
+  .track span{font-size:22px;gap:22px;padding-right:22px}
+  .ghost1{margin-top:-38px}.ghost2{margin-top:36px}
+  .sec{padding-block:80px}
+  .search-sec{padding-block:24px 80px}
+  .search-grid,.score-grid,.gift-grid,.ask-grid,.buy-grid{grid-template-columns:1fr;gap:40px}
+  .search-in{height:66px;font-size:17px;padding:0 20px;gap:12px}
+  .search-in svg{width:20px;height:20px}
+  .caret{height:22px;margin-left:-8px}
+  .suggest a{padding:11px 20px;font-size:15px;gap:12px}
+  .suggest a.hit .go{display:none}
+  .wanted{padding-bottom:80px}
+  .screen{min-height:470px;border-radius:16px}
+  .screen .corner{top:16px;left:16px;right:16px;font-size:9.5px}
+  .screen .corner .hide-s{display:none}
+  .ghost-word{top:40px;font-size:130px}
+  .cardstack{right:auto;left:50%;margin-left:-110px;top:78px;transform:scale(.72);transform-origin:top center}
+  .cardstack .found{display:none}
+  .l3{left:12px;right:12px;bottom:16px}
+  .l3-top{flex-wrap:wrap}
+  .l3-tag,.l3-name{font-size:40px;padding:9px 14px 4px}
+  .l3-sub{font-size:10.5px;gap:8px 16px;padding:11px 14px;display:flex}
+  .wanted-foot{grid-template-columns:1fr;gap:20px}
+  .tears{flex-wrap:wrap}
+  .tear{flex:1 1 33%;border-bottom:1px dashed var(--line-2)}
+  .replay-head,.lu-head{grid-template-columns:1fr;gap:20px;margin-bottom:32px}
+  .monitors{grid-template-columns:1fr;gap:18px}
+  .press{top:50%;width:84px;height:84px}
+  .press b{font-size:19px}
+  .replay-cap{grid-template-columns:1fr;gap:18px}
+  .tiles{grid-template-columns:1fr 1fr;gap:12px}
+  .pill{margin:8px;padding:9px 12px;flex-direction:column;align-items:flex-start;gap:3px}
+  .pill b{font-size:24px}
+  .pill .mono{font-size:9px;letter-spacing:.12em}
+  .tile .letter{width:32px;height:32px;font-size:19px;top:10px;left:10px}
+  .flap{gap:8px;margin:26px 0 24px}
+  .flap span{width:27vw;height:37vw;font-size:30vw;border-radius:9px}
+  .flap span::before{box-shadow:27vw 0 0 var(--ground)}
+  .bars div{grid-template-columns:118px 1fr;font-size:9.5px}
+  .ticket{padding:26px 22px 22px;font-size:12px;transform:rotate(.8deg)}
+  .total b{font-size:52px}
+  .gift-pics{height:auto;padding-bottom:40px}
+  .gift-main{position:relative;width:86%;margin-left:auto}
+  .polaroid{width:52%;bottom:0;left:0}
+  .recipe{margin-top:30px;padding:24px 20px 22px}
+  .stamp{width:100px;height:100px;font-size:18px;right:-6px;top:-34px}
+  .lines summary{grid-template-columns:64px 1fr 30px;padding:18px 0}
+  .lines summary b{font-size:24px}
+  .lines .ans{padding:0 0 20px 76px}
+  .buy{padding-block:80px 70px}
+  .buy-grid{display:flex;flex-direction:column-reverse}
+  .buy-pic{width:76%}
+  .buy-pic .ring{width:380px;height:380px;margin:-190px 0 0 -190px}
+  .trust{grid-template-columns:1fr;gap:12px}
+  .buy-row .btn{flex:1}
+  .buy-row .price{font-size:54px}
+  .ftr-grid{grid-template-columns:1fr 1fr;gap:34px}
+  .ftr-grid>div:first-child{grid-column:1/-1}
+  .ftr .big{font-size:52px}
+}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="Specta home">
+      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 21 7v10l-9 5-9-5V7z" stroke="#E9A46A" stroke-width="2"/><path d="M15.5 8.6H10a1.7 1.7 0 0 0 0 3.4h4a1.7 1.7 0 0 1 0 3.4H8.5" stroke="#F1EEE8" stroke-width="2" stroke-linecap="round"/></svg>
+      SPECTA
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#replay">The wallet</a><a href="#lineup">Colours</a><a href="#gift">Gift</a><a href="#ask">Questions</a>
+    </nav>
+    <div class="hdr-r">
+      <span class="mono">Free shipping · EU</span>
+      <a class="btn sm" href="#buy">Buy · €60</a>
+      <button class="menu" aria-label="Menu"><i></i></button>
+    </div>
+  </div>
+</header>
+<div class="rail" aria-hidden="true"><span>Specta · tonight's broadcast: your cards</span></div>
+
+<main id="top">
+<!-- 01 HERO -->
+<section class="hero" aria-label="Specta pop-up leather cardholder">
+  <div class="hero-l">
+    <div class="hero-meta mono"><span class="count">01/08</span><span class="label">Live from your pocket</span><span class="lbl-long" style="color:var(--ice-s)">· Pop-up leather cardholder</span></div>
+    <div class="hero-mid">
+      <h1 class="h1"><span class="ln"><span>Push down.</span></span><span class="ln"><span><span class="grad">Cards up</span><span class="pop">.</span></span></span></h1>
+      <p class="lead">Push down on the side ledge and up to seven cards rise in a stepped stack. <b>Genuine leather, Saffiano finish.</b></p>
+    </div>
+    <div class="hero-buy">
+      <div class="bug"><span class="mono">Everything included</span><span class="val">€60</span></div>
+      <a class="btn hero-cta" href="#buy">Buy Specta <span class="arr">→</span></a>
+    </div>
+    <div class="tape"><span>€60</span><i></i><span>Free shipping included</span><i></i><span>30-day returns</span></div>
+  </div>
+  <div class="hero-r" aria-hidden="true">
+    <div class="key"></div>
+    <div class="lens"></div>
+    <div class="prod"><img src="img/cutout-black.webp" alt="" width="300" height="630"><span class="shadow"></span></div>
+    <div class="cam"><img src="img/cat-pdp-black-1.jpg" alt=""><div class="mono"><b>Cam 2</b><span>Detail · Black</span></div></div>
+    <span class="tag t1">Genuine leather · Saffiano finish</span>
+    <span class="tag t2">RFID-blocking lining</span>
+    <span class="reg" style="top:28px;right:40px"></span><span class="reg" style="bottom:120px;left:30px"></span>
+  </div>
+  <div class="phone-hero"><img src="img/cat-hero-phone-black.jpg" alt="Specta in black with cards risen in a stepped stack" width="781" height="1400"><span class="ring"></span><span class="mono"><b>Cam 1</b> · Black · styled image</span></div>
+</section>
+
+<!-- TICKER SEAM -->
+<div class="seam" aria-label="Facts">
+  <div class="ghost1"></div><div class="ghost2"></div>
+  <div class="band"><div class="track" id="track">
+    <span>Genuine leather</span><span>Saffiano finish</span><span>RFID-blocking</span><span>Up to 7 cards</span><span>Black · Grey · Navy · Brown</span><span>Free shipping included</span><span>Gift box included</span><span>30-day returns</span><span>EU only</span>
+  </div></div>
+</div>
+
+<!-- 02 SEARCH -->
+<section class="search-sec" aria-label="Incoming search">
+  <div class="wrap search-grid">
+    <div class="reveal">
+      <div class="sec-head mono"><span class="n">02/08</span><span class="rule"></span><span class="label">Incoming: search</span></div>
+      <h2 class="h2">Somebody<br>is typing<span class="dot">.</span></h2>
+      <p class="p" style="margin-top:22px">Every card visible, nothing to dig for. If you've ever wished for that wallet, this is the one you were describing.</p>
+    </div>
+    <div class="reveal" style="--i:2">
+      <div class="search-box" role="img" aria-label="A search bar typing: wallet where I can see every card, suggesting Specta">
+        <div class="search-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+          <span class="typed" id="typed">wallet where I can see every card…</span><span class="caret"></span>
+        </div>
+        <div class="suggest">
+          <a href="#buy" class="hit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span><b>specta</b> pop-up leather cardholder</span><span class="go">€60 →</span></a>
+          <a href="#replay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span><b>specta</b> push down cards up</span></a>
+          <a href="#gift"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><span><b>specta</b> gift box included</span></a>
+        </div>
+      </div>
+      <p class="search-note mono">A person typing. Not search data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 03 WANTED -->
+<section class="wanted" aria-label="Wanted: your card">
+  <div class="wrap">
+    <div class="sec-head mono reveal"><span class="n">03/08</span><span class="rule"></span><span class="label">Breaking · missing card</span></div>
+    <div class="screen reveal" style="--i:1">
+      <div class="corner mono"><span><b>Cam 3</b> · bottom of your wallet</span><span class="hide-s">Case file 001</span></div>
+      <div class="ghost-word">Wanted</div>
+      <div class="cardstack" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <span class="q">The one you need</span>
+        <span class="found mono">Last seen</span>
+        <span class="wl">Your wallet</span>
+      </div>
+      <div class="l3">
+        <div class="l3-top"><span class="l3-tag">Wanted:</span><span class="l3-name">Your card</span></div>
+        <div class="l3-sub"><span><b>Last seen</b> bottom of your wallet</span><span><b>Reward</b> one press</span></div>
+      </div>
+    </div>
+    <div class="wanted-foot reveal" style="--i:2">
+      <div>
+        <p class="mono" style="color:var(--ice-m);margin-bottom:12px">Know someone digging for a card? Tear one off. It copies the link.</p>
+        <div class="tears" id="tears">
+          <button class="tear" data-src="wanted-1"><b>shopspecta.com</b><span>Tear off · copy</span></button>
+          <button class="tear" data-src="wanted-2"><b>shopspecta.com</b><span>Tear off · copy</span></button>
+          <button class="tear" data-src="wanted-3"><b>shopspecta.com</b><span>Tear off · copy</span></button>
+          <button class="tear" data-src="wanted-4"><b>shopspecta.com</b><span>Tear off · copy</span></button>
+          <button class="tear" data-src="wanted-5"><b>shopspecta.com</b><span>Tear off · copy</span></button>
+        </div>
+      </div>
+      <a class="btn-ghost" href="#replay">Watch the replay ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- 04 REPLAY -->
+<section class="replay sec" id="replay" aria-label="Instant replay">
+  <div class="wrap">
+    <div class="replay-head">
+      <div class="reveal">
+        <div class="sec-head mono"><span class="n">04/08</span><span class="rule"></span><span class="label">Instant replay</span></div>
+        <h2 class="h2">One press<span class="dot">.</span><br>Every edge.</h2>
+      </div>
+      <p class="p reveal" style="--i:1">Same wallet, two frames apart. Closed, it's a slim leather case. One push on the side ledge, and the stack steps up so you can see every card.</p>
+    </div>
+    <div class="monitors">
+      <figure class="mon reveal" style="--i:1"><span class="frame mono">Replay 1/2</span><img src="img/studio-navy-closed.jpg" alt="Specta in navy, closed" loading="lazy"><figcaption class="bar mono"><span><b>Before</b> · closed</span><span>Navy</span></figcaption></figure>
+      <div class="press" aria-hidden="true"><span class="mono">One</span><b>Push<br>down</b></div>
+      <figure class="mon reveal" style="--i:2"><span class="frame mono hot">Replay 2/2</span><img src="img/studio-navy-front-cards-up.jpg" alt="Specta in navy with cards up in a stepped stack" loading="lazy"><figcaption class="bar mono"><span><b>After</b> · cards up</span><span>Navy</span></figcaption></figure>
+    </div>
+    <div class="replay-cap reveal">
+      <p class="h3">Push down on the side ledge<br><em>and up to seven cards rise in a stepped stack.</em></p>
+      <span></span>
+      <div class="side-mon"><img src="img/studio-black-side.jpg" alt="Side view of Specta in black showing the side ledge" loading="lazy"><span class="mono"><b>Angle 3</b>The side ledge<br>Black</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 05 LINE-UP -->
+<section class="lineup sec" id="lineup" aria-label="Colours">
+  <div class="wrap">
+    <div class="lu-head">
+      <div class="reveal">
+        <div class="sec-head mono"><span class="n">05/08</span><span class="rule"></span><span class="label">The line-up</span></div>
+        <h2 class="h2">Which one<br>is yours<span class="dot">?</span></h2>
+      </div>
+      <p class="p reveal" style="--i:1">Four colours of genuine leather with a Saffiano finish. Same price, same gift box, same push. Pick a letter.</p>
+    </div>
+    <div class="tiles">
+      <a class="tile reveal" style="--i:0;--c:#3A3A40" href="?variant=black#buy"><figure><img src="img/cat-tile-black.jpg" alt="Specta in black, held up on a street" loading="lazy"><span class="letter">A</span></figure><div class="pill"><b>Black</b><span class="mono"><em>€60</em> · view →</span></div></a>
+      <a class="tile reveal" style="--i:1;--c:#8E8D91" href="?variant=grey#buy"><figure><img src="img/cat-tile-grey.jpg" alt="Specta in grey, held up on a street" loading="lazy"><span class="letter">B</span></figure><div class="pill"><b>Grey</b><span class="mono"><em>€60</em> · view →</span></div></a>
+      <a class="tile reveal" style="--i:2;--c:#4357A0" href="?variant=navy#buy"><figure><img src="img/cat-tile-navy.jpg" alt="Specta in navy, held up on a street" loading="lazy"><span class="letter">C</span></figure><div class="pill"><b>Navy</b><span class="mono"><em>€60</em> · view →</span></div></a>
+      <a class="tile reveal" style="--i:3;--c:#C07A48" href="?variant=brown#buy"><figure><img src="img/cat-tile-brown.jpg" alt="Specta in brown, held up on a street" loading="lazy"><span class="letter">D</span></figure><div class="pill"><b>Brown</b><span class="mono"><em>€60</em> · view →</span></div></a>
+    </div>
+  </div>
+</section>
+
+<!-- 06 SCOREBOARD -->
+<section class="score sec" aria-label="The maths">
+  <div class="wrap score-grid">
+    <div class="reveal">
+      <div class="sec-head mono"><span class="n">06/08</span><span class="rule"></span><span class="label">Scoreboard · the maths</span></div>
+      <h2 class="h2">One number<span class="dot">.</span></h2>
+      <div class="flap" id="flap" aria-label="€60"><span class="gold" data-c="€">€</span><span data-c="6">6</span><span data-c="0">0</span></div>
+      <p class="mono" style="color:var(--ice-m);line-height:2">No codes. No “was” price.<br><span style="color:var(--accent-2)">Nothing added at checkout.</span></p>
+    </div>
+    <div class="ticket reveal" style="--i:2" aria-label="Receipt">
+      <div class="tk-top"><b>SPECTA</b><span>Receipt · all-in</span></div>
+      <div class="row"><span>Specta cardholder</span><span class="lead-dots"></span><span>60.00</span></div>
+      <div class="row"><span>Shipping</span><span class="lead-dots"></span><em>Included</em></div>
+      <div class="row"><span>Gift box</span><span class="lead-dots"></span><em>Included</em></div>
+      <div class="row"><span>30-day returns</span><span class="lead-dots"></span><em>Included</em></div>
+      <div class="total"><span>Total</span><b>€60.00</b></div>
+      <div class="barcode"></div>
+      <div class="tk-foot"><span>EU only</span><span>Nothing added at checkout</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 07 GIFT -->
+<section class="gift sec" id="gift" aria-label="Gift">
+  <div class="wrap gift-grid">
+    <div>
+      <div class="sec-head mono reveal"><span class="n">07/08</span><span class="rule"></span><span class="label">Tonight's special guest: the gift box</span></div>
+      <h2 class="h2 reveal" style="--i:1">Ready<br>to give<span class="dot" style="color:var(--accent-2)">.</span></h2>
+      <p class="p reveal" style="--i:2;margin-top:22px">It arrives in its own gift box, included in the €60. No wrapping paper needed, no extra line at checkout.</p>
+      <div class="recipe reveal" style="--i:3">
+        <div class="stamp">Ready<br>to give</div>
+        <h4>Recipe for a good gift</h4>
+        <div class="meta"><span>Serves 1</span><span>Difficulty: easy</span><span>Prep: none</span></div>
+        <ol>
+          <li>Pick their colour: black, grey, navy or brown.</li>
+          <li>Add the gift box. Already included.</li>
+          <li>Ship it free, anywhere in the EU.</li>
+          <li>Hand it over. Let them push down.</li>
+        </ol>
+      </div>
+      <a class="btn" href="#buy" style="margin-top:34px">Give one · €60 <span class="arr">→</span></a>
+    </div>
+    <div class="gift-pics">
+      <figure class="gift-main reveal" style="--i:1"><img src="img/cat-gift-1.jpg" alt="Two hands holding Specta in black in warm light" loading="lazy"><span class="mono">Styled image · Black</span></figure>
+      <figure class="polaroid reveal" style="--i:2"><img src="img/studio-black-gift-box.jpg" alt="Specta in its black gift box" loading="lazy"><span>The real box</span></figure>
+    </div>
+  </div>
+</section>
+
+<!-- 08 ASK -->
+<section class="ask sec" id="ask" aria-label="Ask Specta">
+  <div class="wrap ask-grid">
+    <div>
+      <div class="sec-head mono reveal"><span class="n">08/08</span><span class="rule"></span><span class="label">Call-in · lines open</span></div>
+      <h2 class="h2 reveal" style="--i:1">Ask<br>Specta<span class="dot">.</span></h2>
+      <p class="p reveal" style="--i:2;margin-top:22px">Real questions people ask before they buy, answered straight. Yours not here? Send it in. A person replies.</p>
+      <div class="callin reveal" style="--i:3" id="callin">
+        <div class="top"><span class="mono label">Line 7 · your question</span><span class="mono">Reply within 2 working days</span></div>
+        <form id="askform">
+          <label class="field"><span>Email</span><input type="email" required placeholder="you@example.com"></label>
+          <label class="field"><span>Question</span><textarea required placeholder="Will my thick ID card fit?"></textarea></label>
+          <div class="send"><p>Or write to <a href="mailto:hello@shopspecta.com" style="color:var(--ice);text-decoration:underline">hello@shopspecta.com</a></p><button class="btn-ghost" type="submit">Send →</button></div>
+        </form>
+        <p class="ok mono">Thanks. Your question is in. We reply within 2 working days.</p>
+      </div>
+    </div>
+    <div class="lines reveal" style="--i:2">
+      <details open><summary><span class="mono">Line 1</span><b>Does cash fit?</b><i></i></summary><p class="ans">A few folded notes, yes. Coins, no. If you carry a coin purse's worth of change, Specta isn't for you.</p></details>
+      <details><summary><span class="mono">Line 2</span><b>How many cards?</b><i></i></summary><p class="ans">Up to seven, depending on how thick your cards are. Push down on the side ledge and they rise in a stepped stack, so you see every edge.</p></details>
+      <details><summary><span class="mono">Line 3</span><b>What does RFID-blocking do?</b><i></i></summary><p class="ans">The lining helps block wireless skimming of the cards inside the wallet. It's an extra layer of protection, not a guarantee, and it can't protect a card once it's out of the wallet.</p></details>
+      <details><summary><span class="mono">Line 4</span><b>Where do you deliver?</b><i></i></summary><p class="ans">Within the EU only. Shipping is free and already included in the €60, so nothing is added at checkout.</p></details>
+      <details><summary><span class="mono">Line 5</span><b>Can I return it?</b><i></i></summary><p class="ans">Yes. You have 30 days to return it. Questions about a return? Email hello@shopspecta.com.</p></details>
+      <details><summary><span class="mono">Line 6</span><b>Why no reviews yet?</b><i></i></summary><p class="ans">We're new. We'd rather show no reviews than invented ones. They'll appear here once real buyers write them, the critical ones too.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- BUY BAND -->
+<section class="buy" id="buy" aria-label="Buy Specta">
+  <div class="wrap buy-grid">
+    <div>
+      <div class="sec-head mono"><span class="rule"></span><span class="label">Final call</span></div>
+      <h2 class="h2">Cards up<span class="dot">.</span><br><span style="color:var(--accent-2)">€60.</span></h2>
+      <div class="swatches" role="group" aria-label="Colour">
+        <button class="sw" style="--c:#2A2A2E" aria-pressed="true" data-v="black"><i></i>Black</button>
+        <button class="sw" style="--c:#8E8D91" aria-pressed="false" data-v="grey"><i></i>Grey</button>
+        <button class="sw" style="--c:#3A4A86" aria-pressed="false" data-v="navy"><i></i>Navy</button>
+        <button class="sw" style="--c:#B46E40" aria-pressed="false" data-v="brown"><i></i>Brown</button>
+      </div>
+      <div class="buy-row">
+        <a class="btn xl" id="buybtn" href="?variant=black">Buy Specta · Black <span class="arr">→</span></a>
+      </div>
+      <div class="tape flat"><span>€60</span><i></i><span>Free shipping included</span><i></i><span>30-day returns</span></div>
+      <div class="trust">
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>30-day returns</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>We reply within 2 working days</div>
+        <div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg><a href="mailto:hello@shopspecta.com">hello@shopspecta.com</a></div>
+      </div>
+      <div class="pays" aria-label="Payment methods"><span class="pay ideal"><b>i</b>DEAL</span><span class="pay"> Apple Pay</span><span class="pay">Google Pay</span><span class="pay">PayPal</span></div>
+    </div>
+    <div class="buy-pic">
+      <span class="ring" aria-hidden="true"></span>
+      <div class="frame"><img id="buyimg" src="img/cat-tile-black.jpg" alt="Specta in black"><span class="lab mono" id="buylab" style="color:var(--ice-m)"><b style="color:var(--accent-2);font-weight:500">A</b> · Black · styled image</span></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr-grid">
+      <div>
+        <a href="#top" class="logo"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 21 7v10l-9 5-9-5V7z" stroke="#E9A46A" stroke-width="2"/><path d="M15.5 8.6H10a1.7 1.7 0 0 0 0 3.4h4a1.7 1.7 0 0 1 0 3.4H8.5" stroke="#F1EEE8" stroke-width="2" stroke-linecap="round"/></svg>SPECTA</a>
+        <p class="big">Push down.<br>Cards up<span class="dot">.</span></p>
+        <p class="mono" style="color:var(--ice-m)">€60 · Free shipping included · 30-day returns</p>
+      </div>
+      <div><h5>Shop</h5><ul><li><a href="#buy">Specta cardholder</a></li><li><a href="#lineup">Colours</a></li><li><a href="#gift">As a gift</a></li></ul></div>
+      <div><h5>Help</h5><ul><li><a href="#ask">Questions</a></li><li><a href="#ask">Shipping</a></li><li><a href="#ask">Returns</a></li><li><a href="mailto:hello@shopspecta.com">Contact</a></li></ul></div>
+      <div><h5>Specta</h5><ul><li><a href="#">About</a></li><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li><li><a href="#">Instagram</a></li></ul></div>
+    </div>
+    <div class="ftr-strip mono"><span>© 2026 Specta · Ships within the EU only</span><span>Lifestyle images are styled images, not customer photos</span></div>
+  </div>
+</footer>
+<div class="toast" id="toast">Link copied</div>
+
+<script>
+(function(){
+  // duplicate ticker
+  var t=document.getElementById('track'); t.innerHTML+=t.innerHTML;
+
+  // reveal (never hides content without JS; skip anything already in view)
+  var els=[].slice.call(document.querySelectorAll('.reveal'));
+  if('IntersectionObserver' in window){
+    document.documentElement.classList.add('fx-on');
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+    els.forEach(function(el){io.observe(el)});
+  }
+
+  // search typing
+  var typed=document.getElementById('typed'), full=typed.textContent, started=false;
+  function type(){ if(started)return; started=true; typed.textContent=''; var i=0;
+    (function step(){ typed.textContent=full.slice(0,++i); if(i<full.length) setTimeout(step,45+Math.random()*40); })(); }
+  if('IntersectionObserver' in window){ var so=new IntersectionObserver(function(es){ if(es[0].isIntersecting){type();so.disconnect()} }); so.observe(typed); }
+
+  // split flap
+  var flap=document.getElementById('flap'), done=false, glyphs='0123456789€';
+  function runFlap(){ if(done)return; done=true;
+    [].forEach.call(flap.children,function(s,k){ var n=6+k*4, c=0;
+      (function f(){ s.classList.remove('flip'); void s.offsetWidth; s.classList.add('flip');
+        if(c++<n){ s.textContent=glyphs[Math.floor(Math.random()*glyphs.length)]; setTimeout(f,55); } else s.textContent=s.dataset.c; })(); }); }
+  if('IntersectionObserver' in window){ var fo=new IntersectionObserver(function(es){ if(es[0].isIntersecting){runFlap();fo.disconnect()} }); fo.observe(flap); }
+
+  // tear-off strips copy the real link with UTM
+  var toast=document.getElementById('toast');
+  function say(m){ toast.textContent=m; toast.classList.add('on'); clearTimeout(say.t); say.t=setTimeout(function(){toast.classList.remove('on')},1800); }
+  document.getElementById('tears').addEventListener('click',function(e){ var b=e.target.closest('.tear'); if(!b)return;
+    var url='https://shopspecta.com/?utm_source=site&utm_medium=tearoff&utm_campaign=wanted&utm_content='+b.dataset.src;
+    var ok=function(){ b.classList.add('done'); b.querySelector('span').textContent='Copied'; say('Link copied'); };
+    if(navigator.clipboard){ navigator.clipboard.writeText(url).then(ok,ok); } else ok(); });
+
+  // colour pick in buy band (Black preselected; ?variant= deep links)
+  var names={black:['A','Black'],grey:['B','Grey'],navy:['C','Navy'],brown:['D','Brown']};
+  var sws=[].slice.call(document.querySelectorAll('.sw')), img=document.getElementById('buyimg'), lab=document.getElementById('buylab'), btn=document.getElementById('buybtn');
+  function pick(v){ sws.forEach(function(s){ s.setAttribute('aria-pressed', s.dataset.v===v) });
+    img.src='img/cat-tile-'+v+'.jpg'; img.alt='Specta in '+v; lab.innerHTML='<b style="color:var(--accent-2);font-weight:500">'+names[v][0]+'</b> · '+names[v][1]+' · styled image';
+    btn.href='?variant='+v; btn.firstChild.textContent='Buy Specta · '+names[v][1]+' '; }
+  sws.forEach(function(s){ s.addEventListener('click',function(){pick(s.dataset.v)}) });
+  try{ var q=new URLSearchParams(location.search).get('variant'); if(names[q]) pick(q); }catch(e){}
+
+  // ask form (mockup: no network)
+  document.getElementById('askform').addEventListener('submit',function(e){ e.preventDefault(); document.getElementById('callin').classList.add('sent'); });
+})();
+</script>
+</body>
+</html>
