@@ -533,12 +533,20 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;op
   .buy h2{font-size:clamp(120px,40vw,170px)}
   .buy h2 small{font-size:clamp(30px,9.4vw,40px)}
   .sw{flex:1 1 calc(50% - 10px)}
-  .buy .strip{font-size:14px;padding:10px 12px;white-space:normal}
   /* footer */
   .ftr{padding:48px 16px 26px}
   .ftr-top{grid-template-columns:1fr 1fr;gap:34px 20px}
   .ftr-top>div:first-child{grid-column:1/-1}
-  .ftr .strip{font-size:14px;padding:10px 12px;white-space:normal}
+  .ftr .strip,.buy .strip{font-size:13.5px;padding:10px 12px;white-space:nowrap}
+  .hide-s{display:none}
+  .buy>div,.maths>div,.sign>div{min-width:0}
+  .wall-head>div{width:100%}
+  .search .go{padding:0 12px;font-size:16px}
+  .buy-wrap .tape{display:none}
+  .bird{display:none}
+  .ba-head h2{font-size:15.5vw}
+  .buy .btn{font-size:21px;white-space:nowrap;padding:0 12px}
+  .print figcaption,.mugshot .ph figcaption{font-size:10px;letter-spacing:.1em}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
@@ -680,8 +688,8 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;op
   <div class="sign-wrap sheet-wrap">
     <span class="tape t1"></span>
     <div class="sign">
-      <svg class="bird" style="top:40px;right:22%" aria-hidden="true"><use href="#bird"/></svg>
-      <svg class="bird" style="top:74px;right:16%;width:24px" aria-hidden="true"><use href="#bird"/></svg>
+      <svg class="bird" style="top:34px;left:44%" aria-hidden="true"><use href="#bird"/></svg>
+      <svg class="bird" style="top:62px;left:49%;width:24px" aria-hidden="true"><use href="#bird"/></svg>
       <div>
         <p class="eyebrow" style="color:var(--brick)">Choose your route</p>
         <h2 id="sign-h" style="margin-top:12px">Which one<br>is <span>yours?</span></h2>
@@ -925,7 +933,7 @@ body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;op
       <div><h4>Help</h4><ul><li><a href="#ask">Questions</a></li><li><a href="#">Shipping (EU)</a></li><li><a href="#">30-day returns</a></li><li><a href="mailto:support@shopspecta.com">Contact</a></li></ul></div>
       <div><h4>Specta</h4><ul><li><a href="#">About</a></li><li><a href="#leaflet">Product facts</a></li><li><a href="#">Privacy</a></li><li><a href="#">Terms</a></li></ul></div>
     </div>
-    <p class="strip">Push down. Cards up. <i>·</i> €60 <i>·</i> Free shipping included <i>·</i> 30-day returns</p>
+    <p class="strip"><span class="hide-s">Push down. Cards up. <i>·</i> </span>€60 <i>·</i> Free shipping included <i>·</i> 30-day returns</p>
     <div class="ftr-bot"><span>© 2026 Specta · shopspecta.com</span><span>Ships within the EU · prices include VAT</span></div>
   </div>
 </footer>

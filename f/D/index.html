@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specta · Push down. Cards up.</title>
+<meta name="description" content="Specta: a genuine leather pop-up cardholder. Push down on the side ledge and up to seven cards rise in a stepped stack. €60, free shipping included, gift box included.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night:#07090F; --asphalt:#151820; --deep:#1B2440; --navy:#2D3A67;
+  --amber:#E39A4E; --sodium:#F4C77D; --white:#F5F3EE; --red:#D9473A;
+  --muted:rgba(245,243,238,.70); --faint:rgba(245,243,238,.56); --line:rgba(245,243,238,.13);
+  --ink:#10131B;
+  --display:"Syne",system-ui,sans-serif; --mono:"Space Mono",ui-monospace,monospace; --body:"DM Sans",system-ui,sans-serif;
+  --gut:clamp(20px,4.4vw,72px); --max:1320px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--night);color:var(--white);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+.grain{position:fixed;inset:0;pointer-events:none;z-index:90;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+
+/* ---------- shared type ---------- */
+.tag{display:flex;align-items:center;gap:12px;font:700 11px/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--sodium)}
+.tag::before{content:"";width:26px;height:1px;background:var(--amber)}
+.tag .n{margin-left:auto;color:var(--faint);font-weight:400}
+.h2{font:800 clamp(38px,5.4vw,80px)/.92 var(--display);text-transform:uppercase;letter-spacing:-.015em;margin:20px 0 22px}
+.h2 .dot{color:var(--amber)}
+.lead{color:var(--muted);max-width:44ch;font-size:18px}
+.mono{font-family:var(--mono)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:12px;height:58px;padding:0 30px;border-radius:4px;
+  background:var(--amber);color:var(--ink);font:700 15px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset,0 14px 40px -12px rgba(227,154,78,.65);transition:transform .2s,background .2s;border:0;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--sodium);transform:translateY(-1px)}
+.btn .arr{font-family:var(--body);font-weight:600;letter-spacing:0}
+.ghost{display:inline-flex;align-items:center;gap:10px;height:58px;padding:0 4px;font:700 13px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--white);border-bottom:1px solid var(--line)}
+.ghost:hover{color:var(--sodium)}
+.reg{position:absolute;width:14px;height:14px;opacity:.45;pointer-events:none}
+.reg::before,.reg::after{content:"";position:absolute;background:var(--white)}
+.reg::before{left:6px;top:0;width:1px;height:14px}.reg::after{top:6px;left:0;height:1px;width:14px}
+.r-tl{top:22px;left:22px}.r-tr{top:22px;right:22px}.r-bl{bottom:22px;left:22px}.r-br{bottom:22px;right:22px}
+
+/* ---------- split-flap ---------- */
+.flaps{display:flex;flex-wrap:nowrap;gap:.12em}
+.f{position:relative;display:inline-grid;place-items:center;width:.92em;height:1.34em;border-radius:.09em;
+  font:700 1em/1 var(--mono);color:var(--white);
+  background:linear-gradient(180deg,#252a37 0%,#1b1f2a 49.5%,#13161e 50.5%,#181b25 100%);
+  box-shadow:0 .06em .12em rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.07)}
+.f::after{content:"";position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.85);box-shadow:0 1px 0 rgba(255,255,255,.04)}
+.f.sp{background:transparent;box-shadow:none}.f.sp::after{display:none}
+.flaps.amber .f{color:var(--sodium)}
+.flaps.big{font-size:clamp(30px,4.1vw,56px)}
+.flaps.sm{font-size:clamp(15px,1.7vw,24px)}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:0;z-index:50;background:rgba(7,9,15,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hdr .wrap{display:flex;align-items:center;height:68px;gap:28px}
+.logo{display:flex;align-items:center;gap:11px;font:800 19px/1 var(--display);letter-spacing:.16em}
+.logo svg{width:31px;height:21px;flex:none}
+.nav{display:flex;gap:30px;margin-left:auto;font:700 12px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.nav a:hover{color:var(--white)}
+.hdr-buy{display:flex;align-items:center;gap:16px;margin-left:24px}
+.hdr-buy .btn{height:42px;padding:0 20px;font-size:12px}
+.burger{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:4px;background:none;place-items:center}
+.burger i{display:block;width:16px;height:1.5px;background:var(--white);box-shadow:0 -5px 0 var(--white),0 5px 0 var(--white)}
+
+/* ---------- HERO ---------- */
+.hero{position:relative;overflow:hidden;min-height:clamp(640px,calc(100vh - 68px),860px);display:flex;align-items:center;
+  background:
+   radial-gradient(ellipse 46% 64% at 74% 62%,rgba(45,58,103,.78),transparent 70%),
+   radial-gradient(ellipse 70% 50% at 74% 104%,rgba(27,36,64,.95),transparent 70%),
+   radial-gradient(ellipse 40% 40% at 12% 96%,rgba(227,154,78,.13),transparent 70%),
+   radial-gradient(ellipse 60% 40% at 0% 0%,rgba(27,36,64,.6),transparent 60%),
+   var(--night)}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:120px;background:linear-gradient(transparent,rgba(7,9,15,.85));pointer-events:none}
+.hero .wrap{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);align-items:center;gap:20px;width:100%;padding-top:34px;padding-bottom:40px}
+.eyebrow{font:700 12px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--sodium);display:flex;gap:12px;align-items:center}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--amber)}
+.h1{font:800 clamp(52px,7.6vw,116px)/.86 var(--display);text-transform:uppercase;letter-spacing:-.025em;margin:20px 0 28px;white-space:nowrap}
+.h1 .w{display:inline-block;clip-path:inset(0 100% 0 0);animation:wipe .62s cubic-bezier(.7,0,.2,1) forwards}
+.h1 .w:nth-of-type(2){animation-delay:.07s}
+.h1 .dot{display:inline-block;color:var(--amber);transform:scale(0);animation:pop .42s cubic-bezier(.3,1.6,.5,1) .78s forwards}
+@keyframes wipe{to{clip-path:inset(0 0 0 0)}}
+@keyframes pop{to{transform:scale(1)}}
+
+.board{position:relative;background:linear-gradient(180deg,#0f121a,#0b0d13);border:1px solid #232838;border-radius:10px;padding:16px 18px 0;max-width:720px;
+  box-shadow:0 40px 80px -30px rgba(0,0,0,.9),0 0 0 6px rgba(15,18,26,.55),inset 0 1px 0 rgba(255,255,255,.05)}
+.board-head{display:flex;justify-content:space-between;gap:12px;font:700 10px/1 var(--mono);letter-spacing:.24em;text-transform:uppercase;color:var(--faint);padding-bottom:12px;border-bottom:1px solid #1f2331}
+.board-head b{color:var(--sodium);font-weight:700}
+.board-row{display:flex;align-items:flex-end;gap:22px;padding:16px 0 18px;flex-wrap:wrap}
+.cell small{display:block;font:700 9.5px/1 var(--mono);letter-spacing:.24em;color:var(--faint);margin-bottom:9px}
+.tape{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 18px;margin:0 -18px;padding:14px 18px;border-radius:0 0 9px 9px;
+  background:repeating-linear-gradient(-45deg,#E39A4E 0 14px,#d98d40 14px 28px);color:var(--ink);font:700 12.5px/1.2 var(--mono);letter-spacing:.18em;text-transform:uppercase}
+.tape span+span::before{content:"·";margin-right:18px}
+.hero-cta{display:flex;align-items:center;gap:26px;margin-top:30px;flex-wrap:wrap}
+.paynote{font:400 11px/1.5 var(--mono);letter-spacing:.12em;color:var(--faint);text-transform:uppercase;margin-top:16px}
+
+.stage{position:relative;justify-self:center;width:min(100%,500px)}
+.stage img{width:100%;height:auto;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 16%,#000 82%,transparent 100%),linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%);
+  -webkit-mask-composite:source-in;mask-image:linear-gradient(to bottom,transparent 0,#000 16%,#000 82%,transparent 100%),linear-gradient(to right,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect}
+.stage .cap{position:absolute;right:4%;bottom:7%;font:400 10px/1.5 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint);text-align:right}
+.ghostword{position:absolute;right:-2vw;top:50%;transform:translateY(-50%);font:800 25vw/.8 var(--display);color:rgba(45,58,103,.16);letter-spacing:-.04em;z-index:0;pointer-events:none;user-select:none}
+
+/* ---------- ON BOARD strip (M10) ---------- */
+.onboard{background:#0b0d13;border-top:1px solid #1d2130;border-bottom:1px solid #1d2130}
+.onboard .wrap{display:grid;grid-template-columns:auto repeat(5,1fr);align-items:stretch}
+.ob-h{display:flex;align-items:center;padding:20px 26px 20px 0;font:700 11px/1.3 var(--mono);letter-spacing:.24em;color:var(--sodium);border-right:1px solid #1d2130}
+.ob{padding:18px 20px;border-right:1px solid #1d2130}
+.ob:last-child{border-right:0}
+.ob b{display:block;font:700 13px/1.25 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--white)}
+.ob span{display:flex;align-items:center;gap:7px;margin-top:8px;font:700 10px/1 var(--mono);letter-spacing:.2em;color:var(--amber)}
+.ob span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px var(--amber)}
+
+/* ---------- scene base ---------- */
+.scene{position:relative;padding:clamp(80px,10vw,150px) 0;overflow:hidden}
+
+/* street */
+.street{background:radial-gradient(ellipse 50% 60% at 72% 40%,rgba(45,58,103,.35),transparent 70%),linear-gradient(180deg,var(--night),var(--asphalt) 70%,#0f1117)}
+.street .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,560px);gap:60px;align-items:center}
+.shot{position:relative}
+.shot .frame{position:relative;width:100%;max-width:540px;margin-left:auto}
+.shot .frame img{width:100%;border-radius:2px;box-shadow:0 50px 90px -40px rgba(0,0,0,.95)}
+.shot .reflect{width:100%;max-width:540px;margin-left:auto;height:130px;overflow:hidden;opacity:.22;filter:blur(1.5px);
+  -webkit-mask-image:linear-gradient(#000,transparent);mask-image:linear-gradient(#000,transparent)}
+.shot .reflect img{transform:scaleY(-1);width:100%}
+.phone{position:absolute;left:-150px;bottom:40px;width:270px;border-radius:38px;padding:11px;background:linear-gradient(145deg,#2b2f3b,#0b0d12);
+  box-shadow:0 60px 80px -30px rgba(0,0,0,.95),0 0 0 1px rgba(255,255,255,.08),inset 0 0 0 1px rgba(255,255,255,.06);transform:rotate(-5deg);z-index:3}
+.screen{border-radius:28px;background:#0e1016;overflow:hidden;min-height:400px;padding:16px 14px 22px}
+.island{width:84px;height:24px;border-radius:14px;background:#000;margin:0 auto 18px}
+.search{display:flex;align-items:center;gap:9px;height:44px;border-radius:22px;background:#1c1f29;padding:0 14px;font:400 13.5px/1.2 var(--body);color:var(--white);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.search svg{flex:none;opacity:.6}
+.caret{display:inline-block;width:1.5px;height:16px;background:var(--amber);margin-left:1px;vertical-align:-3px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.sugg{list-style:none;margin-top:12px}
+.sugg li{display:flex;align-items:center;gap:10px;padding:11px 8px;font:400 13px/1.3 var(--body);color:var(--muted);border-bottom:1px solid rgba(255,255,255,.05)}
+.sugg li svg{flex:none;opacity:.45}
+.sugg li.hit{color:var(--ink);background:var(--sodium);border-radius:10px;border:0;margin-top:6px;font-weight:600}
+.sugg li.hit small{display:block;font-weight:400;font-size:11px;opacity:.75}
+.sugg li.hit .sm{width:22px;height:22px;border-radius:6px;background:var(--ink);display:grid;place-items:center;flex:none}
+.sugg li[hidden]{display:none}
+
+/* pinboard */
+.pin-scene{background:radial-gradient(ellipse 60% 55% at 40% 30%,rgba(244,199,125,.10),transparent 70%),linear-gradient(180deg,#0f1117,var(--night))}
+.pin-scene .wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:56px;align-items:center}
+.cork{position:relative;border-radius:6px;padding:46px 40px 50px;min-height:640px;
+  background:
+    radial-gradient(ellipse 70% 60% at 45% 25%,rgba(244,199,125,.16),transparent 70%),
+    radial-gradient(circle at 20% 30%,rgba(255,255,255,.035) 1px,transparent 1.5px) 0 0/7px 7px,
+    radial-gradient(circle at 70% 60%,rgba(0,0,0,.35) 1px,transparent 1.5px) 0 0/5px 5px,
+    #1d1914;
+  box-shadow:0 0 0 14px #120f0c,0 0 0 15px #2a2219,0 60px 100px -40px rgba(0,0,0,.95),inset 0 0 120px rgba(0,0,0,.7)}
+.wanted{position:relative;width:min(100%,400px);background:#F5F3EE;color:var(--ink);padding:26px 26px 0;transform:rotate(-2deg);
+  box-shadow:0 30px 40px -20px rgba(0,0,0,.85),0 2px 4px rgba(0,0,0,.4);
+  background-image:linear-gradient(180deg,rgba(0,0,0,.0),rgba(80,60,30,.07))}
+.wanted .pin{position:absolute;top:-8px;left:50%;margin-left:-9px}
+.pin{width:18px;height:18px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#ffd9a0,var(--amber) 45%,#8a5420);box-shadow:0 6px 6px -2px rgba(0,0,0,.6);z-index:4}
+.wanted h3{font:800 76px/.84 var(--display);letter-spacing:-.03em;text-align:center}
+.wanted .sub{display:flex;align-items:center;gap:10px;justify-content:center;font:700 13px/1 var(--mono);letter-spacing:.3em;margin:12px 0 16px}
+.wanted .sub::before,.wanted .sub::after{content:"";flex:1;height:2px;background:var(--red)}
+.wanted .photo{position:relative;border:1px solid rgba(0,0,0,.15);background:#fff}
+.wanted .photo img{width:100%;aspect-ratio:1.25;object-fit:cover;filter:contrast(1.04)}
+.wanted .photo em{position:absolute;left:8px;bottom:8px;font:700 9.5px/1 var(--mono);letter-spacing:.18em;font-style:normal;background:var(--ink);color:var(--white);padding:5px 7px}
+.wanted dl{display:grid;grid-template-columns:auto 1fr;gap:7px 12px;margin:16px 0 18px;font:400 13px/1.35 var(--body)}
+.wanted dt{font:700 10px/1.6 var(--mono);letter-spacing:.18em}
+.wanted dd b{font-weight:600}
+.strips{display:grid;grid-template-columns:repeat(7,1fr);margin:0 -26px;border-top:1.5px dashed rgba(16,19,27,.4)}
+.strip{height:112px;border:0;border-right:1.5px dashed rgba(16,19,27,.35);background:none;cursor:pointer;display:grid;place-items:center;transition:transform .2s,background .2s}
+.strip:last-child{border-right:0}
+.strip span{writing-mode:vertical-rl;transform:rotate(180deg);font:700 10px/1 var(--mono);letter-spacing:.1em;color:var(--ink)}
+.strip:hover{background:rgba(227,154,78,.25);transform:translateY(4px) rotate(2deg)}
+.strip.torn{opacity:.18}
+.idx{position:absolute;background:#F5F3EE;color:var(--ink);padding:16px 18px 18px;font:400 14px/1.4 var(--body);box-shadow:0 22px 30px -16px rgba(0,0,0,.85);
+  background-image:repeating-linear-gradient(transparent 0 23px,rgba(45,58,103,.18) 23px 24px);background-position:0 30px}
+.idx .pin{position:absolute;top:-7px;left:22px}
+.idx small{display:block;font:700 9.5px/1 var(--mono);letter-spacing:.2em;color:var(--red);margin-bottom:9px}
+.idx-a{right:44px;top:70px;width:250px;transform:rotate(3deg)}
+.idx-b{right:84px;top:300px;width:220px;transform:rotate(-2.5deg);background:var(--sodium);background-image:none}
+.idx-b b{font:800 22px/1 var(--display);text-transform:uppercase;display:block;margin-top:2px}
+.idx-c{right:30px;bottom:56px;width:260px;transform:rotate(1.5deg)}
+.string{position:absolute;inset:0;pointer-events:none;z-index:3}
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,30px);opacity:0;z-index:99;background:var(--sodium);color:var(--ink);font:700 12px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;padding:14px 18px;border-radius:4px;transition:.3s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* reveal */
+.reveal{background:#000;padding:0}
+.letterbox{position:relative;padding:clamp(70px,8vw,120px) 0;background:radial-gradient(ellipse 34% 60% at 50% 50%,rgba(70,78,100,.32),transparent 70%),#050608;border-top:46px solid #000;border-bottom:46px solid #000}
+.reveal .wrap{display:grid;grid-template-columns:1fr minmax(0,400px) 1fr;gap:48px;align-items:center}
+.reveal .frame{position:relative}
+.reveal .frame img{width:100%;max-width:390px;margin:0 auto;
+  -webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 60%,transparent 100%)}
+.subtitle{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);width:min(88vw,640px);text-align:center;font:500 clamp(17px,1.7vw,23px)/1.4 var(--body);color:#fff;
+  text-shadow:0 2px 0 #000,0 0 18px rgba(0,0,0,.9),0 0 3px #000}
+.subtitle i{display:block;font:700 10px/1 var(--mono);letter-spacing:.3em;color:var(--sodium);font-style:normal;margin-bottom:12px;text-shadow:none}
+.side{font:700 11px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.side.l{text-align:right}
+.side .big{display:block;font:800 clamp(48px,6vw,96px)/.85 var(--display);letter-spacing:-.02em;color:transparent;-webkit-text-stroke:1.2px rgba(245,243,238,.55);margin:18px 0 26px}
+.side .big.solid{color:var(--white);-webkit-text-stroke:0}
+.side ul{list-style:none;display:grid;gap:14px}
+.side li{display:flex;gap:10px;align-items:center;color:var(--muted);letter-spacing:.14em}
+.side.l li{justify-content:flex-end}
+.side li::before{content:"";width:16px;height:1px;background:var(--amber)}
+.side.l li::before{order:2}
+.side a{display:inline-block;margin-top:26px;color:var(--sodium);border-bottom:1px solid var(--amber);padding-bottom:6px}
+.tc{position:absolute;top:-34px;font:400 10px/1 var(--mono);letter-spacing:.22em;color:#5b6070}
+.tc.l{left:var(--gut)}.tc.r{right:var(--gut)}
+
+/* desk */
+.desk{background:
+  radial-gradient(ellipse 46% 56% at 30% 30%,rgba(244,199,125,.20),transparent 70%),
+  repeating-linear-gradient(92deg,rgba(255,255,255,.012) 0 2px,transparent 2px 9px),
+  linear-gradient(180deg,#14161d,#1b1d25 60%,#121319)}
+.desk .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,640px);gap:40px;align-items:center}
+.desk-set{position:relative;height:560px}
+.calc{position:absolute;left:0;top:30px;width:300px;padding:22px 22px 26px;border-radius:26px;transform:rotate(-7deg);
+  background:linear-gradient(160deg,#2a2f40,#161925 70%);box-shadow:0 70px 70px -40px rgba(0,0,0,.95),0 30px 30px -20px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12),inset 0 -2px 0 rgba(0,0,0,.4)}
+.calc .brand{display:flex;justify-content:space-between;align-items:center;font:700 10px/1 var(--mono);letter-spacing:.24em;color:var(--faint);margin-bottom:12px}
+.solar{display:flex;gap:2px}.solar i{width:14px;height:12px;background:linear-gradient(#2d2418,#1a140d);border:1px solid #000}
+.lcd{border-radius:10px;padding:16px 16px 12px;background:#06070a;box-shadow:inset 0 3px 10px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08);text-align:right}
+.lcd small{display:flex;justify-content:space-between;font:700 9px/1 var(--mono);letter-spacing:.2em;color:rgba(244,199,125,.4)}
+.lcd b{display:block;font:700 58px/1.05 var(--mono);color:var(--sodium);letter-spacing:.02em;text-shadow:0 0 14px rgba(244,199,125,.55),0 0 2px rgba(244,199,125,.9)}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}
+.keys i{display:grid;place-items:center;height:46px;border-radius:12px;font:700 17px/1 var(--mono);font-style:normal;color:var(--white);
+  background:linear-gradient(180deg,#373c4e,#262a38);box-shadow:0 4px 0 #0e1017,0 6px 10px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.1)}
+.keys i.op{background:linear-gradient(180deg,#2D3A67,#222c50)}
+.keys i.eq{background:linear-gradient(180deg,#f0ad62,var(--amber));color:var(--ink);box-shadow:0 4px 0 #8f5a26,0 6px 10px rgba(0,0,0,.5)}
+.keys i.z{grid-column:span 2}
+.receipt{position:absolute;right:0;top:0;width:300px;background:#F5F3EE;color:var(--ink);padding:26px 24px 36px;transform:rotate(4deg);font:400 12.5px/1.65 var(--mono);
+  box-shadow:0 50px 50px -30px rgba(0,0,0,.9);
+  -webkit-mask:linear-gradient(#000,#000) top/100% calc(100% - 10px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 10px repeat-x;
+  mask:linear-gradient(#000,#000) top/100% calc(100% - 10px) no-repeat,conic-gradient(from -45deg at bottom,#0000,#000 1deg 89deg,#0000 90deg) bottom/16px 10px repeat-x}
+.receipt h4{font:800 22px/1 var(--display);letter-spacing:.18em;text-align:center}
+.receipt .c{text-align:center;font-size:11px;opacity:.7;margin-bottom:6px}
+.receipt hr{border:0;border-top:1.5px dashed rgba(16,19,27,.45);margin:10px 0}
+.receipt p{display:flex;justify-content:space-between;gap:10px}
+.receipt p.t{font-weight:700;font-size:16px}
+.receipt .bar{height:46px;margin:14px 0 6px;background:repeating-linear-gradient(90deg,var(--ink) 0 2px,transparent 2px 4px,var(--ink) 4px 7px,transparent 7px 8px,var(--ink) 8px 9px,transparent 9px 12px)}
+.desk-copy .btn{margin-top:30px}
+.maths-note{display:flex;gap:22px;flex-wrap:wrap;margin-top:26px;font:700 11px/1 var(--mono);letter-spacing:.18em;color:var(--faint);text-transform:uppercase}
+.maths-note span{display:flex;gap:8px;align-items:center}
+.maths-note span::before{content:"✕";color:var(--amber)}
+
+/* line-up */
+.lineup{background:radial-gradient(ellipse 50% 60% at 25% 50%,rgba(227,154,78,.20),transparent 70%),linear-gradient(180deg,#121319,#0d0e13)}
+.lineup .wrap{display:grid;grid-template-columns:minmax(0,560px) minmax(0,1fr);gap:72px;align-items:center}
+.lineup .frame img{width:100%;max-width:560px;box-shadow:0 50px 90px -40px rgba(0,0,0,.95)}
+.lineup .frame{position:relative}
+.lineup .frame .cap{position:absolute;left:16px;bottom:16px;font:700 10px/1 var(--mono);letter-spacing:.2em;color:#fff;background:rgba(7,9,15,.7);padding:8px 10px;backdrop-filter:blur(6px)}
+.quiz{display:grid;gap:12px;margin-top:8px}
+.ans{display:grid;grid-template-columns:44px 38px 1fr auto;align-items:center;gap:16px;padding:12px 18px 12px 12px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.02);transition:.2s}
+.ans:hover{border-color:var(--amber);background:rgba(227,154,78,.07);transform:translateX(4px)}
+.ans .k{display:grid;place-items:center;height:44px;border-radius:4px;background:#1b1f2a;font:700 18px/1 var(--mono);color:var(--sodium)}
+.ans .sw{width:38px;height:38px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15),inset 0 -6px 10px rgba(0,0,0,.35);
+  background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.06) 0 1px,transparent 1px 3px),repeating-linear-gradient(-45deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px)}
+.ans b{font:800 24px/1 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.ans .p{font:700 13px/1 var(--mono);letter-spacing:.12em;color:var(--muted)}
+.ans:hover .p{color:var(--sodium)}
+.quiz-note{margin-top:18px;font:400 11px/1.6 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+
+/* gift */
+.gift{background:
+  radial-gradient(ellipse 55% 50% at 50% 38%,rgba(227,154,78,.42),transparent 70%),
+  radial-gradient(ellipse 80% 30% at 50% 100%,rgba(140,80,30,.35),transparent 70%),
+  linear-gradient(180deg,#0d0a08,#1c120a 60%,#120c07)}
+.gift-head{text-align:center;max-width:760px;margin:0 auto 60px}
+.gift-head .tag{justify-content:center}
+.gift-head .tag::after{content:"";width:26px;height:1px;background:var(--amber)}
+.gift-head .tag .n{display:none}
+.gift-head .lead{margin:0 auto;max-width:52ch}
+.table{position:relative;display:grid;grid-template-columns:minmax(0,440px) minmax(0,360px) minmax(0,290px);justify-content:center;align-items:end;gap:44px;padding-bottom:40px}
+.table::after{content:"";position:absolute;left:-10%;right:-10%;bottom:0;height:120px;background:linear-gradient(180deg,rgba(60,35,16,.0),rgba(60,35,16,.55));border-top:1px solid rgba(244,199,125,.18);z-index:0}
+.table>*{position:relative;z-index:1}
+.g-mood img{width:100%;box-shadow:0 50px 60px -30px rgba(0,0,0,.95)}
+.g-poster img{width:100%;box-shadow:0 40px 50px -25px rgba(0,0,0,.95);border:8px solid #0e0b08;outline:1px solid rgba(244,199,125,.25)}
+.g-poster{transform:rotate(2deg);transform-origin:bottom}
+.recipe{position:relative;background:#F5F3EE;color:var(--ink);padding:150px 26px 26px;margin-top:120px;box-shadow:0 40px 50px -25px rgba(0,0,0,.95)}
+.polaroid{position:absolute;left:50%;top:-120px;width:230px;margin-left:-115px;background:#fff;padding:10px 10px 34px;transform:rotate(-4deg);box-shadow:0 20px 30px -12px rgba(0,0,0,.6)}
+.polaroid img{width:100%}
+.polaroid span{position:absolute;left:0;right:0;bottom:10px;text-align:center;font:700 9.5px/1 var(--mono);letter-spacing:.18em}
+.stamp{position:absolute;right:-18px;top:62px;transform:rotate(-14deg);border:3px solid var(--navy);color:var(--navy);padding:8px 12px;font:800 17px/1 var(--display);letter-spacing:.06em;text-align:center;border-radius:4px;background:rgba(245,243,238,.6);
+  box-shadow:inset 0 0 0 2px rgba(245,243,238,1),inset 0 0 0 4px var(--navy)}
+.stamp small{display:block;font:700 8.5px/1 var(--mono);letter-spacing:.2em;margin-top:5px}
+.recipe h3{font:800 25px/1 var(--display);text-transform:uppercase;letter-spacing:.01em}
+.recipe .meta{display:flex;gap:14px;flex-wrap:wrap;font:700 10px/1 var(--mono);letter-spacing:.16em;margin:12px 0 14px;padding-bottom:12px;border-bottom:1.5px solid var(--ink)}
+.recipe h5{font:700 10px/1 var(--mono);letter-spacing:.22em;margin:12px 0 6px;color:#7a4a1c}
+.recipe ul,.recipe ol{padding-left:18px;font:400 14px/1.5 var(--body)}
+.gift-cta{display:flex;justify-content:center;gap:26px;margin-top:56px;flex-wrap:wrap;align-items:center}
+
+/* noir */
+.noir{background:#030304}
+.noir .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,380px) minmax(0,1fr);gap:56px;align-items:center;position:relative;z-index:2}
+.trails{position:absolute;inset:0;pointer-events:none;z-index:1}
+.trails i{position:absolute;left:-5%;right:-5%;height:1.5px;background:linear-gradient(90deg,transparent,rgba(217,71,58,.9) 30%,rgba(255,130,110,1) 50%,rgba(217,71,58,.9) 70%,transparent);
+  box-shadow:0 0 12px 1px rgba(217,71,58,.7),0 0 34px 2px rgba(217,71,58,.35);transform-origin:center}
+.noir .poster{position:relative}
+.noir .poster img{width:100%;max-width:380px;margin:0 auto;box-shadow:0 0 0 1px rgba(217,71,58,.35),0 0 80px -10px rgba(217,71,58,.35),0 60px 90px -40px #000}
+.noir .copy .h2{font-size:clamp(36px,4.2vw,62px)}
+.facts{list-style:none;display:grid;gap:0;border-top:1px solid var(--line)}
+.facts li{display:flex;justify-content:space-between;gap:18px;padding:15px 0;border-bottom:1px solid var(--line);font:700 12px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.facts li span{color:var(--faint);font-weight:400}
+
+/* kiosk */
+.ask{background:radial-gradient(ellipse 50% 50% at 50% 20%,rgba(244,199,125,.12),transparent 70%),linear-gradient(180deg,var(--night),#0d1019)}
+.kiosk{position:relative;max-width:1120px;margin:0 auto;border-radius:16px;padding:0 0 28px;
+  background:linear-gradient(180deg,#1a1e2a,#11141c);box-shadow:0 0 0 1px #2a3042,0 80px 120px -50px rgba(0,0,0,.95),inset 0 1px 0 rgba(255,255,255,.07)}
+.kiosk::after{content:"";position:absolute;left:12%;right:12%;bottom:-70px;height:70px;background:radial-gradient(ellipse at top,rgba(0,0,0,.6),transparent 70%)}
+.sign{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:26px 34px;border-radius:16px 16px 0 0;background:linear-gradient(180deg,#f7d496,var(--sodium) 60%,#e7b768);color:var(--ink);
+  box-shadow:0 0 60px rgba(244,199,125,.35),inset 0 -2px 0 rgba(0,0,0,.15)}
+.sign h2{font:800 clamp(40px,5.6vw,84px)/.86 var(--display);letter-spacing:-.02em}
+.sign .q{flex:none;display:grid;place-items:center;width:clamp(56px,6vw,86px);aspect-ratio:1;border-radius:50%;background:var(--ink);color:var(--sodium);font:800 clamp(30px,3.4vw,50px)/1 var(--display)}
+.sign p{font:700 11px/1.5 var(--mono);letter-spacing:.2em;max-width:22ch;text-align:right}
+.glass{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:0;margin:28px 28px 0;border-radius:10px;overflow:hidden;background:#0a0c12;
+  box-shadow:inset 0 0 0 1px #262b3a,inset 0 20px 60px rgba(0,0,0,.6);position:relative}
+.glass::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,rgba(255,255,255,.05),transparent 28%);pointer-events:none}
+.qa{padding:12px 30px 18px}
+.qa details{border-bottom:1px solid var(--line)}
+.qa details:last-child{border-bottom:0}
+.qa summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:18px;align-items:center;padding:19px 0;font:600 18px/1.3 var(--body)}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary::after{content:"+";flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);font:400 18px/1 var(--mono);color:var(--sodium);transition:.2s}
+.qa details[open] summary::after{content:"–";background:var(--sodium);color:var(--ink);border-color:var(--sodium)}
+.qa details p{padding:0 50px 20px 0;color:var(--muted);font-size:16px}
+.ask-form{padding:30px;border-left:1px solid #20242f;background:linear-gradient(180deg,rgba(27,36,64,.45),rgba(27,36,64,.15))}
+.ask-form h3{font:800 26px/1 var(--display);text-transform:uppercase;margin:12px 0 10px}
+.ask-form p{color:var(--muted);font-size:15px;margin-bottom:20px}
+.field{display:block;margin-bottom:14px}
+.field span{display:block;font:700 10px/1 var(--mono);letter-spacing:.22em;color:var(--faint);margin-bottom:8px;text-transform:uppercase}
+.field textarea,.field input{width:100%;background:#07090F;border:1px solid #2a3042;border-radius:4px;padding:14px 14px;font:400 15px/1.4 var(--body);color:var(--white);resize:none;outline:none;transition:.2s}
+.field textarea{height:104px}
+.field textarea:focus,.field input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(227,154,78,.2)}
+.field ::placeholder{color:rgba(245,243,238,.38)}
+.ask-form .btn{width:100%;height:54px}
+.ask-form .ok{display:none;margin-top:14px;font:700 11px/1.5 var(--mono);letter-spacing:.16em;color:var(--sodium);text-transform:uppercase}
+.ask-form.sent .ok{display:block}
+.kiosk-foot{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:18px 30px 0;font:400 10.5px/1.4 var(--mono);letter-spacing:.2em;color:var(--faint);text-transform:uppercase}
+
+/* final boarding */
+.final{background:radial-gradient(ellipse 60% 60% at 50% 0%,rgba(45,58,103,.5),transparent 70%),var(--night);padding-bottom:110px}
+.final .board{max-width:1120px;margin:0 auto;padding:22px 26px 0}
+.final .board-row{justify-content:space-between;align-items:center;padding:26px 0 24px;gap:28px}
+.final .flaps.big{font-size:clamp(22px,3.3vw,48px)}
+.dep{width:100%;border-collapse:collapse;font:700 14px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.dep th{font:700 9.5px/1 var(--mono);letter-spacing:.24em;color:var(--faint);text-align:left;padding:12px 0;border-top:1px solid #1f2331;border-bottom:1px solid #1f2331}
+.dep td{padding:14px 0;border-bottom:1px solid #1a1d28;vertical-align:middle}
+.dep tr:last-child td{border-bottom:0}
+.dep .col{display:flex;align-items:center;gap:14px}
+.dep .col i{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.dep .dest{color:var(--muted)}
+.dep .fare{color:var(--sodium)}
+.dep .stat{color:var(--amber);display:flex;align-items:center;gap:8px}
+.dep .go{text-align:right}
+.dep .go a{display:inline-flex;align-items:center;gap:10px;height:42px;padding:0 18px;border-radius:4px;border:1px solid #2a3042;font:700 12px/1 var(--mono);letter-spacing:.16em;transition:.2s}
+.dep tr:first-child .go a,.dep .go a:hover{background:var(--amber);border-color:var(--amber);color:var(--ink)}
+.final .tape{margin-top:14px}
+.trust{max-width:1120px;margin:34px auto 0;display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:0;border:1px solid var(--line);border-radius:8px}
+.trust>div{padding:22px 24px;border-right:1px solid var(--line)}
+.trust>div:last-child{border-right:0}
+.trust h6{font:700 10px/1 var(--mono);letter-spacing:.22em;color:var(--faint);text-transform:uppercase;margin-bottom:12px}
+.trust p{font-size:15px;color:var(--white)}
+.trust p a{color:var(--sodium);border-bottom:1px solid rgba(244,199,125,.4)}
+.pays{display:flex;flex-wrap:wrap;gap:7px}
+.pays span{display:inline-grid;place-items:center;height:28px;padding:0 9px;border-radius:4px;background:var(--white);color:var(--ink);font:700 10.5px/1 var(--body);letter-spacing:.02em}
+.pays .ideal{background:#fff;color:#CC0066;font-weight:700}
+.pays .ap{background:#000;color:#fff;box-shadow:inset 0 0 0 1px #444}
+.pays .gp{background:#fff;color:#3c4043}
+.pays .pp{color:#003087;background:#fff}
+.pays .vi{color:#1a1f71;background:#fff;font-style:italic;font-weight:800}
+.pays .mc{background:#fff;gap:0;padding:0 7px}
+.mc em{display:inline-block;width:14px;height:14px;border-radius:50%;background:#eb001b}
+.mc em+em{background:#f79e1b;margin-left:-6px;mix-blend-mode:multiply}
+
+/* footer */
+.foot{background:#040508;border-top:1px solid var(--line);padding:72px 0 34px}
+.foot .grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px}
+.foot h6{font:700 10px/1 var(--mono);letter-spacing:.24em;color:var(--faint);text-transform:uppercase;margin-bottom:18px}
+.foot ul{list-style:none;display:grid;gap:11px;font-size:15px;color:var(--muted)}
+.foot ul a:hover{color:var(--white)}
+.foot .say{font:800 clamp(34px,3.4vw,50px)/.9 var(--display);text-transform:uppercase;margin:24px 0 18px;letter-spacing:-.01em}
+.foot .say span{color:var(--amber)}
+.foot .news{display:flex;max-width:400px;margin-top:22px;border:1px solid #2a3042;border-radius:4px;overflow:hidden}
+.foot .news input{flex:1;min-width:0;background:transparent;border:0;padding:0 14px;height:50px;outline:none;font-size:15px}
+.foot .news input::placeholder{color:rgba(245,243,238,.4)}
+.foot .news button{border:0;background:var(--white);color:var(--ink);font:700 11px/1 var(--mono);letter-spacing:.16em;padding:0 18px;cursor:pointer}
+.foot .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;margin-top:60px;padding-top:24px;border-top:1px solid var(--line);font:400 11px/1.5 var(--mono);letter-spacing:.14em;color:var(--faint);text-transform:uppercase}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .street .wrap,.pin-scene .wrap,.desk .wrap,.lineup .wrap{grid-template-columns:1fr}
+  .phone{left:-20px}
+  .reveal .wrap{grid-template-columns:1fr 1fr}
+  .reveal .frame{grid-column:1/-1;order:-1}
+  .noir .wrap{grid-template-columns:1fr 1fr}
+  .noir .poster{grid-column:1/-1;order:-1}
+  .onboard .wrap{grid-template-columns:repeat(3,1fr)}
+  .ob-h{grid-column:1/-1;border-right:0;border-bottom:1px solid #1d2130;padding:16px 0}
+  .table{grid-template-columns:1fr 1fr}
+  .g-poster{display:none}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .nav,.hdr-buy .pr{display:none}
+  .burger{display:grid}
+  .hdr .wrap{height:60px;gap:12px}
+  .hdr-buy{margin-left:auto;gap:10px}
+  .hdr-buy .btn{height:40px;padding:0 14px;font-size:11px;letter-spacing:.12em}
+  .hero{min-height:0;display:block}
+  .hero .wrap{grid-template-columns:1fr;padding-top:0;gap:0}
+  .stage{order:-1;width:calc(100% + 2*var(--gut));margin:0 calc(-1*var(--gut));max-width:none}
+  .stage img{height:400px;object-fit:cover;object-position:50% 58%}
+  .stage .cap{display:none}
+  .ghostword{display:none}
+  .h1{font-size:clamp(40px,12.4vw,56px);margin:-34px 0 20px;position:relative;z-index:3}
+  .eyebrow{display:none}
+  .board{padding:12px 12px 0}
+  .board-head{font-size:9px;letter-spacing:.16em}
+  .board-row{gap:14px;padding:12px 0 14px}
+  .flaps.big{font-size:27px}
+  .flaps.sm{font-size:15px}
+  .tape{margin:0 -12px;padding:12px;font-size:10.5px;letter-spacing:.12em;gap:4px 10px}
+  .tape span+span::before{margin-right:10px}
+  .hero-cta{gap:14px;margin-top:20px}
+  .hero-cta .btn{width:100%}
+  .hero-cta .ghost{height:auto;padding:6px 0}
+  .paynote{margin-top:12px;margin-bottom:8px}
+  .onboard .wrap{grid-template-columns:1fr 1fr;padding:0}
+  .ob-h{padding:14px var(--gut)}
+  .ob{padding:14px var(--gut);border-bottom:1px solid #1d2130}
+  .ob:nth-child(odd){border-right:0}
+  .ob:last-child{grid-column:1/-1}
+  .scene{padding:76px 0}
+  .h2{font-size:clamp(34px,10.5vw,46px)}
+  .lead{font-size:16px}
+  .street .wrap{gap:36px}
+  .shot{padding-bottom:300px}
+  .shot .reflect{height:70px}
+  .phone{left:auto;right:4px;bottom:0;width:240px;transform:rotate(-3deg)}
+  .screen{min-height:340px}
+  .cork{padding:30px 16px 24px;min-height:0;box-shadow:0 0 0 8px #120f0c,0 0 0 9px #2a2219,0 40px 60px -30px #000,inset 0 0 80px rgba(0,0,0,.7)}
+  .wanted{width:100%;padding:20px 18px 0}
+  .wanted h3{font-size:60px}
+  .strips{margin:0 -18px}
+  .strip{height:92px}
+  .idx{position:relative;right:auto;left:auto;top:auto;bottom:auto;width:auto;margin-top:26px}
+  .idx-a{transform:rotate(1.5deg)}.idx-b{transform:rotate(-1.5deg);margin-left:30px}.idx-c{display:none}
+  .string{display:none}
+  .pin-scene .wrap{gap:40px}
+  .letterbox{border-width:28px}
+  .reveal .wrap{grid-template-columns:1fr;gap:34px}
+  .side.l{display:none}
+  .side{text-align:left}
+  .side .big{font-size:52px}
+  .subtitle{bottom:3%;font-size:16px;width:calc(100vw - 32px)}
+  .tc{display:none}
+  .desk-set{height:auto;display:grid;gap:30px;justify-items:center;padding:10px 0 20px}
+  .calc,.receipt{position:relative;left:auto;right:auto;top:auto}
+  .calc{width:290px;transform:rotate(-3deg)}
+  .receipt{width:290px;transform:rotate(2deg)}
+  .desk .wrap{gap:20px}
+  .lineup .wrap{gap:40px}
+  .ans{grid-template-columns:40px 30px 1fr auto;gap:12px;padding:10px 14px 10px 10px}
+  .ans .k{height:40px;font-size:16px}
+  .ans .sw{width:30px;height:30px}
+  .ans b{font-size:20px}
+  .gift-head{margin-bottom:40px;text-align:left}
+  .gift-head .tag{justify-content:flex-start}
+  .gift-head .tag::after{display:none}
+  .table{grid-template-columns:1fr;gap:30px;padding-bottom:20px}
+  .recipe{margin-top:140px}
+  .stamp{right:-6px}
+  .g-poster{display:block;width:300px;margin:0 auto;transform:rotate(1.5deg)}
+  .gift-cta{justify-content:flex-start;margin-top:40px}
+  .gift-cta .btn{width:100%}
+  .noir .wrap{grid-template-columns:1fr;gap:36px}
+  .noir .poster img{max-width:300px}
+  .sign{padding:20px;flex-wrap:wrap}
+  .sign p{display:none}
+  .glass{grid-template-columns:1fr;margin:16px 12px 0}
+  .qa{padding:4px 18px 8px}
+  .qa summary{font-size:16px;padding:16px 0}
+  .qa details p{padding:0 0 16px 0;font-size:15px}
+  .ask-form{border-left:0;border-top:1px solid #20242f;padding:22px 18px}
+  .kiosk-foot{margin:16px 18px 0}
+  .final .board{padding:14px 12px 0}
+  .final .board-row{gap:14px}
+  .final .flaps.big{font-size:21px}
+  .dep thead{display:none}
+  .dep tr{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:14px 0;border-bottom:1px solid #1a1d28}
+  .dep td{border:0;padding:0}
+  .dep .dest,.dep .stat{display:none}
+  .dep .fare{text-align:right}
+  .dep .go{grid-column:1/-1;text-align:left;margin-top:8px}
+  .dep .go a{width:100%;justify-content:center}
+  .trust{grid-template-columns:1fr}
+  .trust>div{border-right:0;border-bottom:1px solid var(--line)}
+  .trust>div:last-child{border-bottom:0}
+  .foot .grid{grid-template-columns:1fr 1fr;gap:34px 20px}
+  .foot .grid>div:first-child{grid-column:1/-1}
+  .reg{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .h1 .w,.h1 .dot{animation:none;clip-path:none;transform:none}
+  .caret{animation:none}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="261.5 342.5 501 339"><path d="M377.59 353.13 422.18 427.88 454.98 482.86C458.71 489.15 465.49 492.97 472.8 492.97H624.17C640.02 492.97 650.02 510.02 642.26 523.83L601.82 596.12 570.48 652.11C566.84 658.64 559.91 662.7 552.39 662.7H371.57C364.25 662.7 357.51 658.88 353.75 652.58L264.93 503.6C261.02 497.06 261.02 488.92 264.93 482.38L341.99 353.13C350.02 339.63 369.57 339.63 377.59 353.13"/><path d="M471.61 361.3H652.43C659.71 361.3 666.49 365.15 670.22 371.42L759.07 520.4C762.98 526.94 762.98 535.11 759.07 541.65L682.01 670.88C673.98 684.37 654.43 684.37 646.41 670.88L625.46 635.77C621.75 629.54 621.64 621.79 625.19 615.45L668.31 538.43C672.55 530.85 674.79 522.31 674.79 513.75 674.79 485.84 652.07 463.13 624.17 463.13H491.27C483.02 463.13 475.38 458.79 471.15 451.7L445.03 407.91C441.31 401.67 441.2 393.93 444.75 387.59L453.52 371.93C457.16 365.36 464.09 361.3 471.61 361.3"/></symbol>
+</svg>
+
+<header class="hdr">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Specta home"><svg viewBox="261.5 342.5 501 339" fill="#F5F3EE"><use href="#mark"/></svg>SPECTA</a>
+    <nav class="nav" aria-label="Main">
+      <a href="#reveal">How it works</a>
+      <a href="#colours">Colours</a>
+      <a href="#gift">Gifting</a>
+      <a href="#ask">Ask Specta</a>
+    </nav>
+    <div class="hdr-buy">
+      <a class="btn" href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Buy · €60</a>
+      <button class="burger" aria-label="Menu"><i></i></button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<section class="hero" aria-label="Specta">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="eyebrow">Genuine leather · pop-up cardholder</p>
+      <h1 class="h1"><span class="w">PUSH</span><br><span class="w">DOWN</span><span class="dot">.</span></h1>
+      <div class="board" role="img" aria-label="Departure board: Cards up, now boarding. €60, free shipping included, 30-day returns.">
+        <div class="board-head"><span><b>SPECTA</b> DEPARTURES</span><span>GATE · FRONT POCKET</span></div>
+        <div class="board-row">
+          <div class="cell"><small>DESTINATION</small><div class="flaps big" data-flap="CARDS UP"></div></div>
+          <div class="cell"><small>STATUS</small><div class="flaps sm amber" data-flap="NOW BOARDING"></div></div>
+        </div>
+        <div class="tape"><span>€60</span><span>Free shipping included</span><span>30-day returns</span></div>
+      </div>
+      <div class="hero-cta">
+        <a class="btn" href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Buy now · €60 <span class="arr">→</span></a>
+        <a class="ghost" href="#colours">Pick your colour ↓</a>
+      </div>
+      <p class="paynote">Gift box included · EU only · iDEAL, Apple Pay, PayPal, cards</p>
+    </div>
+    <figure class="stage">
+      <img src="img/cat-hero-splash-navy.jpg" width="1127" height="1400" alt="The navy Specta cardholder rising out of a navy splash, cards up">
+      <figcaption class="cap">Fig. 00<br>Navy · cards up</figcaption>
+    </figure>
+  </div>
+  <span class="reg r-bl"></span><span class="reg r-br"></span>
+</section>
+
+<!-- M10 ON BOARD -->
+<section class="onboard" aria-label="What's on board">
+  <div class="wrap">
+    <div class="ob-h">ON BOARD</div>
+    <div class="ob"><b>Genuine leather, Saffiano finish</b><span>ON BOARD</span></div>
+    <div class="ob"><b>Up to 7 cards, stepped stack</b><span>ON BOARD</span></div>
+    <div class="ob"><b>RFID-blocking</b><span>ON BOARD</span></div>
+    <div class="ob"><b>Gift box</b><span>INCLUDED</span></div>
+    <div class="ob"><b>Free shipping · EU</b><span>INCLUDED</span></div>
+  </div>
+</section>
+
+<!-- SCENE 01 STREET -->
+<section class="scene street" aria-labelledby="s1">
+  <span class="reg r-tl"></span><span class="reg r-tr"></span>
+  <div class="wrap">
+    <div>
+      <p class="tag">Scene 01 · The street <span class="n">01 / 08</span></p>
+      <h2 class="h2" id="s1">You've typed<br>this before<span class="dot">.</span></h2>
+      <p class="lead">Somewhere between the coffee and the card reader, you start digging. There is a wallet that lets you see every card at once.</p>
+    </div>
+    <div class="shot">
+      <div class="frame">
+        <img src="img/cat-wall-1.jpg" width="1127" height="1400" alt="Campaign art: a Specta billboard reading WALLETS ARE BACK on a city building" loading="lazy">
+      </div>
+      <div class="reflect" aria-hidden="true"><img src="img/cat-wall-1.jpg" alt=""></div>
+      <div class="phone" aria-label="A phone search bar typing: wallet where I can see every card">
+        <div class="screen">
+          <div class="island"></div>
+          <div class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span id="typed">wallet where i can see every card</span><i class="caret"></i></div>
+          <ul class="sugg" id="sugg">
+            <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>wallet where i can see every card</li>
+            <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>wallet where cards pop up</li>
+            <li><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>leather cardholder front pocket</li>
+            <li class="hit"><span class="sm"><svg viewBox="261.5 342.5 501 339" width="14" fill="#F4C77D"><use href="#mark"/></svg></span><span>specta<small>pop-up leather cardholder · €60</small></span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 02 PINBOARD -->
+<section class="scene pin-scene" aria-labelledby="s2">
+  <div class="wrap">
+    <div class="cork">
+      <svg class="string" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <polyline points="44,6 70,14 64,46 80,82" fill="none" stroke="#D9473A" stroke-width=".35" vector-effect="non-scaling-stroke" style="stroke-width:1.6px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))"/>
+      </svg>
+      <article class="wanted">
+        <span class="pin"></span>
+        <h3>WANTED</h3>
+        <p class="sub">YOUR CARD</p>
+        <div class="photo"><img src="img/studio-black-closed.jpg" width="1100" height="1100" alt="Exhibit A: the black Specta, closed, cards hidden" loading="lazy"><em>EXHIBIT A · CLOSED</em></div>
+        <dl>
+          <dt>LAST SEEN</dt><dd>The bottom of your wallet.</dd>
+          <dt>DESCRIPTION</dt><dd>Flat. Plastic. Always the one you need.</dd>
+          <dt>REWARD</dt><dd><b>One press.</b></dd>
+        </dl>
+        <div class="strips" aria-label="Tear-off strips: each copies the Specta link">
+          <button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button><button class="strip"><span>shopspecta.com</span></button>
+        </div>
+      </article>
+      <div class="idx idx-a"><span class="pin"></span><small>NOTE 01</small>The card you need is never the one on top.</div>
+      <div class="idx idx-b"><span class="pin"></span><small style="color:var(--ink)">THE FIX</small><b>Push down on the side ledge.</b></div>
+      <div class="idx idx-c"><span class="pin"></span><small>NOTE 02</small>Up to seven cards rise in a stepped stack. Every edge showing.</div>
+    </div>
+    <div>
+      <p class="tag">Scene 02 · The bottom of the wallet <span class="n">02 / 08</span></p>
+      <h2 class="h2" id="s2">Still<br>digging<span class="dot">?</span></h2>
+      <p class="lead">In a normal wallet you can only reach the top card. The rest hide behind it, usually the one you need.</p>
+      <p class="quiz-note" style="margin-top:26px">Know someone who's still digging? Tear a strip: it copies the link.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 03 REVEAL -->
+<section class="scene reveal" id="reveal" aria-labelledby="s3">
+  <div class="letterbox">
+    <span class="tc l">SC.03 · TAKE 1</span><span class="tc r">MACRO · BLACK</span>
+    <div class="wrap">
+      <div class="side l">
+        <p class="tag" style="justify-content:flex-end">Scene 03 · The reveal</p>
+        <span class="big" id="s3">CARDS</span>
+        <ul><li>Push down</li><li>Cards up</li><li>Every edge showing</li></ul>
+      </div>
+      <figure class="frame">
+        <img src="img/cat-pdp-black-1.jpg" width="781" height="1400" alt="Macro: the black Specta with cards risen in a stepped stack" loading="lazy">
+        <figcaption class="subtitle"><i>[ ONE PRESS ]</i>Push down on the side ledge and up to seven cards rise in a stepped stack.</figcaption>
+      </figure>
+      <div class="side">
+        <span class="big solid">UP<span style="color:var(--amber)">.</span></span>
+        <ul><li>Up to 7 cards</li><li>Depending on thickness</li><li>Genuine leather</li></ul>
+        <a href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">See it in black · €60 →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 04 DESK -->
+<section class="scene desk" aria-labelledby="s4">
+  <span class="reg r-tl"></span><span class="reg r-tr"></span>
+  <div class="wrap">
+    <div class="desk-copy">
+      <p class="tag">Scene 04 · The desk <span class="n">04 / 08</span></p>
+      <h2 class="h2" id="s4">The<br>maths<span class="dot">.</span></h2>
+      <p class="lead">One number. Shipping and the gift box are already in it, and nothing is added at checkout.</p>
+      <div class="maths-note"><span>No codes</span><span>No "was" price</span><span>No extras</span></div>
+      <a class="btn" href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Buy · €60 <span class="arr">→</span></a>
+    </div>
+    <div class="desk-set" aria-label="A calculator reading 60.00 next to a receipt">
+      <div class="calc" aria-hidden="true">
+        <div class="brand"><span>SPECTA · CALC</span><span class="solar"><i></i><i></i><i></i><i></i></span></div>
+        <div class="lcd"><small><span>EUR</span><span>TOTAL</span></small><b>60.00</b></div>
+        <div class="keys"><i>C</i><i>%</i><i>√</i><i class="op">÷</i><i>7</i><i>8</i><i>9</i><i class="op">×</i><i>4</i><i>5</i><i>6</i><i class="op">−</i><i>1</i><i>2</i><i>3</i><i class="op">+</i><i class="z">0</i><i>.</i><i class="eq">=</i></div>
+      </div>
+      <div class="receipt">
+        <h4>SPECTA</h4>
+        <p class="c" style="display:block">shopspecta.com</p>
+        <hr>
+        <p><span>SPECTA CARDHOLDER</span><span>60.00</span></p>
+        <p style="opacity:.7;font-size:11px"><span>genuine leather · saffiano</span></p>
+        <p><span>SHIPPING (EU)</span><span>INCL.</span></p>
+        <p><span>GIFT BOX</span><span>INCL.</span></p>
+        <p><span>30-DAY RETURNS</span><span>INCL.</span></p>
+        <hr>
+        <p class="t"><span>TOTAL</span><span>€60.00</span></p>
+        <hr>
+        <div class="bar"></div>
+        <p class="c" style="display:block">PRICES INCL. VAT · THANK YOU</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 05 LINE-UP -->
+<section class="scene lineup" id="colours" aria-labelledby="s5">
+  <div class="wrap">
+    <figure class="frame">
+      <img src="img/cat-about-3.jpg" width="1127" height="1400" alt="All four Specta colours lined up in a car boot at golden hour" loading="lazy">
+      <figcaption class="cap">BLACK · GREY · NAVY · BROWN</figcaption>
+    </figure>
+    <div>
+      <p class="tag">Scene 05 · The line-up <span class="n">05 / 08</span></p>
+      <h2 class="h2" id="s5">Which one<br>is yours<span class="dot">?</span></h2>
+      <p class="lead" style="margin-bottom:26px">Four colours, one leather, one price.</p>
+      <div class="quiz">
+        <a class="ans" href="https://shopspecta.com/products/specta-wallet?variant=61402165215562"><span class="k">A</span><span class="sw" style="background-color:#29282E"></span><b>Black</b><span class="p">€60 →</span></a>
+        <a class="ans" href="https://shopspecta.com/products/specta-wallet?variant=61402165281098"><span class="k">B</span><span class="sw" style="background-color:#5d5d63"></span><b>Grey</b><span class="p">€60 →</span></a>
+        <a class="ans" href="https://shopspecta.com/products/specta-wallet?variant=61402165248330"><span class="k">C</span><span class="sw" style="background-color:#2D3A67"></span><b>Navy</b><span class="p">€60 →</span></a>
+        <a class="ans" href="https://shopspecta.com/products/specta-wallet?variant=61402165313866"><span class="k">D</span><span class="sw" style="background-color:#B46E40"></span><b>Brown</b><span class="p">€60 →</span></a>
+      </div>
+      <p class="quiz-note">Genuine leather, Saffiano finish · free shipping included</p>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 06 GIFT TABLE -->
+<section class="scene gift" id="gift" aria-labelledby="s6">
+  <div class="wrap">
+    <div class="gift-head">
+      <p class="tag">Scene 06 · The gift table <span class="n">06 / 08</span></p>
+      <h2 class="h2" id="s6">Ready to give<span class="dot">.</span></h2>
+      <p class="lead">Every Specta arrives in its own gift box, included in the €60. Free shipping too, so there's nothing to add.</p>
+    </div>
+    <div class="table">
+      <figure class="g-mood"><img src="img/cat-gift-1.jpg" width="1127" height="1400" alt="Two hands holding the black Specta in a warm amber glow" loading="lazy"></figure>
+      <article class="recipe">
+        <div class="polaroid"><img src="img/studio-black-gift-box.jpg" width="1100" height="1100" alt="The real Specta gift box, open, with the black cardholder inside" loading="lazy"><span>THE REAL BOX</span></div>
+        <div class="stamp">READY TO GIVE<small>GIFT BOX INCLUDED</small></div>
+        <h3>Recipe for a good gift</h3>
+        <div class="meta"><span>SERVES 1</span><span>PREP: NONE</span><span>DIFFICULTY: EASY</span></div>
+        <h5>INGREDIENTS</h5>
+        <ul><li>1 Specta, in their colour</li><li>1 gift box (included)</li><li>Free shipping (included)</li></ul>
+        <h5>METHOD</h5>
+        <ol><li>Pick Black, Grey, Navy or Brown.</li><li>Let it arrive boxed.</li><li>Hand it over. Say "push down".</li></ol>
+      </article>
+      <figure class="g-poster"><img src="img/cat-wall-4.jpg" width="781" height="1400" alt="Campaign art: Carry first class, art deco poster with the navy Specta" loading="lazy"></figure>
+    </div>
+    <div class="gift-cta">
+      <a class="btn" href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Give a Specta · €60 <span class="arr">→</span></a>
+      <a class="ghost" href="#colours">Choose their colour</a>
+    </div>
+  </div>
+</section>
+
+<!-- SCENE 07 NOIR -->
+<section class="scene noir" aria-labelledby="s7">
+  <div class="trails" aria-hidden="true">
+    <i style="top:30%;transform:rotate(-4deg)"></i><i style="top:36%;transform:rotate(-2.5deg);opacity:.7"></i><i style="top:62%;transform:rotate(3deg);opacity:.85"></i><i style="top:68%;transform:rotate(4.5deg);opacity:.5"></i>
+  </div>
+  <div class="wrap">
+    <div class="copy">
+      <p class="tag">Scene 07 · After dark</p>
+      <h2 class="h2" id="s7">No digging<br>after dark<span class="dot">.</span></h2>
+      <p class="lead">Dim bar, short queue, card reader waiting. One press and every card is right there.</p>
+    </div>
+    <figure class="poster"><img src="img/cat-wall-3.jpg" width="781" height="1400" alt="Campaign art: SHARP., the black Specta in red light trails" loading="lazy"></figure>
+    <ul class="facts">
+      <li>Leather <span>Genuine, Saffiano finish</span></li>
+      <li>Cards <span>Up to 7, stepped</span></li>
+      <li>RFID-blocking <span>Helps block skimming</span></li>
+      <li>Colours <span>Black · Grey · Navy · Brown</span></li>
+      <li>Price <span style="color:var(--sodium)">€60, all in</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- SCENE 08 ASK SPECTA -->
+<section class="scene ask" id="ask" aria-labelledby="s8">
+  <div class="wrap">
+    <div class="kiosk">
+      <div class="sign"><h2 id="s8">ASK<br>SPECTA</h2><p>Real questions.<br>Straight answers.<br>No small print.</p><span class="q">?</span></div>
+      <div class="glass">
+        <div class="qa">
+          <details open><summary>How many cards does it hold?</summary><p>Up to seven, depending on how thick they are. Push down on the side ledge and they rise in a stepped stack.</p></details>
+          <details><summary>Does cash fit?</summary><p>It's made for cards. If you carry coins or a thick fold of notes, this isn't the wallet for you.</p></details>
+          <details><summary>What does RFID-blocking do, and not do?</summary><p>It helps block wireless skimming of the contactless cards inside. It doesn't replace your bank's own protection.</p></details>
+          <details><summary>What does €60 include?</summary><p>The cardholder, the gift box and shipping. Nothing is added at checkout.</p></details>
+          <details><summary>Where do you deliver?</summary><p>To all 27 EU countries, with free shipping included and a tracking link by e-mail. We don't ship outside the EU yet.</p></details>
+          <details><summary>Can I return it?</summary><p>Yes, within 30 days of delivery. E-mail us your order number first and we'll send the return steps.</p></details>
+          <details><summary>Why are there no reviews yet?</summary><p>We've only just launched. We'd rather show no reviews than invented ones.</p></details>
+        </div>
+        <form class="ask-form" id="askForm">
+          <p class="tag">Your own question</p>
+          <h3>Not on the list?</h3>
+          <p>A person reads every question. We reply within 2 working days.</p>
+          <label class="field"><span>Your question</span><textarea placeholder="Will my bank card fit with the others?"></textarea></label>
+          <label class="field"><span>Your e-mail</span><input type="email" placeholder="you@example.com"></label>
+          <button class="btn" type="submit">Send question <span class="arr">→</span></button>
+          <p class="ok">Thanks. You'll hear from us within 2 working days.</p>
+        </form>
+      </div>
+      <div class="kiosk-foot"><span>support@shopspecta.com</span><span>Reply within 2 working days</span><span>EU only</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL BOARDING -->
+<section class="scene final" aria-labelledby="s9">
+  <div class="wrap">
+    <div class="board">
+      <div class="board-head"><span><b>SPECTA</b> DEPARTURES</span><span>ALL COLOURS · ONE FARE</span></div>
+      <div class="board-row">
+        <h2 class="flaps big amber" id="s9" data-flap="FINAL BOARDING: €60" aria-label="Final boarding: €60"></h2>
+      </div>
+      <table class="dep">
+        <thead><tr><th>Colour</th><th>Destination</th><th>Fare</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          <tr><td><span class="col"><i style="background:#29282E"></i>Black</span></td><td class="dest">Front pocket</td><td class="fare">€60</td><td class="stat">Boarding</td><td class="go"><a href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Buy black →</a></td></tr>
+          <tr><td><span class="col"><i style="background:#5d5d63"></i>Grey</span></td><td class="dest">Front pocket</td><td class="fare">€60</td><td class="stat">Boarding</td><td class="go"><a href="https://shopspecta.com/products/specta-wallet?variant=61402165281098">Buy grey →</a></td></tr>
+          <tr><td><span class="col"><i style="background:#2D3A67"></i>Navy</span></td><td class="dest">Front pocket</td><td class="fare">€60</td><td class="stat">Boarding</td><td class="go"><a href="https://shopspecta.com/products/specta-wallet?variant=61402165248330">Buy navy →</a></td></tr>
+          <tr><td><span class="col"><i style="background:#B46E40"></i>Brown</span></td><td class="dest">Front pocket</td><td class="fare">€60</td><td class="stat">Boarding</td><td class="go"><a href="https://shopspecta.com/products/specta-wallet?variant=61402165313866">Buy brown →</a></td></tr>
+        </tbody>
+      </table>
+      <div class="tape"><span>€60</span><span>Free shipping included</span><span>Gift box included</span><span>30-day returns</span></div>
+    </div>
+    <div class="trust">
+      <div><h6>Pay your way</h6><div class="pays"><span class="ideal">iDEAL</span><span class="ap"> Pay</span><span class="gp">G Pay</span><span class="pp">PayPal</span><span class="vi">VISA</span><span class="mc"><em></em><em></em></span></div></div>
+      <div><h6>Returns</h6><p>30 days from delivery.</p></div>
+      <div><h6>Shipping</h6><p>Free, included. EU only.</p></div>
+      <div><h6>Questions</h6><p>Reply within 2 working days. <a href="mailto:support@shopspecta.com">E-mail us</a></p></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="grid">
+      <div>
+        <a class="logo" href="#top"><svg viewBox="261.5 342.5 501 339" fill="#F5F3EE"><use href="#mark"/></svg>SPECTA</a>
+        <p class="say">Push down.<br><span>Cards up.</span></p>
+        <p style="color:var(--muted);font-size:15px;max-width:40ch">Launch notes, new colours and nothing else. One e-mail when there's news.</p>
+        <form class="news" onsubmit="event.preventDefault();this.querySelector('button').textContent='SUBSCRIBED ✓'"><input type="email" placeholder="Your e-mail" aria-label="Your e-mail"><button>JOIN</button></form>
+      </div>
+      <div><h6>Shop</h6><ul><li><a href="https://shopspecta.com/products/specta-wallet?variant=61402165215562">Specta · €60</a></li><li><a href="#colours">Black</a></li><li><a href="#colours">Grey</a></li><li><a href="#colours">Navy</a></li><li><a href="#colours">Brown</a></li></ul></div>
+      <div><h6>Help</h6><ul><li><a href="#ask">Ask Specta</a></li><li><a href="#">Shipping</a></li><li><a href="#">Returns</a></li><li><a href="mailto:support@shopspecta.com">Contact</a></li></ul></div>
+      <div><h6>Specta</h6><ul><li><a href="#">About</a></li><li><a href="#">Instagram</a></li><li><a href="#">TikTok</a></li><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
+    </div>
+    <div class="fine"><span>© 2026 Specta · Prices in euros, incl. VAT</span><span>€60 · Free shipping included · 30-day returns</span></div>
+  </div>
+</footer>
+<div class="toast" id="toast">Link copied</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var CH = 'ABCDEFGHIJKLMNOPRSTUVWXYZ0123456789€';
+  // split-flap boards
+  document.querySelectorAll('[data-flap]').forEach(function(el, bi){
+    var txt = el.getAttribute('data-flap');
+    el.innerHTML = '';
+    txt.split('').forEach(function(c, i){
+      var s = document.createElement('span');
+      s.className = 'f' + (c === ' ' ? ' sp' : '');
+      s.textContent = c === ' ' ? '' : c;
+      el.appendChild(s);
+      if (c === ' ' || reduce) return;
+      var n = 6 + (i % 4), k = 0, start = 500 + bi*350 + i*55;
+      setTimeout(function tick(){
+        if (k++ < n){ s.textContent = CH[(Math.random()*CH.length)|0]; setTimeout(tick, 48); }
+        else s.textContent = c;
+      }, start);
+    });
+  });
+  // search bar typing (M12)
+  var typed = document.getElementById('typed'), sugg = document.querySelectorAll('#sugg li');
+  var q = typed.textContent;
+  function runType(){
+    if (reduce) return;
+    typed.textContent = ''; sugg.forEach(function(li){ li.hidden = true; });
+    var i = 0;
+    (function t(){
+      if (i <= q.length){ typed.textContent = q.slice(0, i++); setTimeout(t, 55); }
+      else sugg.forEach(function(li, j){ setTimeout(function(){ li.hidden = false; }, 250 + j*260); });
+    })();
+  }
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ runType(); io.disconnect(); } }); }, {threshold:.4});
+    io.observe(document.querySelector('.phone'));
+  }
+  // tear-off strips (M3): copy real product link with UTM
+  var toast = document.getElementById('toast');
+  var link = 'https://shopspecta.com/products/specta-wallet?utm_source=site&utm_medium=wanted_strip&utm_campaign=wanted_poster';
+  document.querySelectorAll('.strip').forEach(function(b){
+    b.addEventListener('click', function(){
+      try { navigator.clipboard.writeText(link); } catch(e){}
+      b.classList.add('torn');
+      toast.classList.add('on'); setTimeout(function(){ toast.classList.remove('on'); }, 1800);
+    });
+  });
+  // ask form
+  document.getElementById('askForm').addEventListener('submit', function(e){ e.preventDefault(); this.classList.add('sent'); });
+})();
+</script>
+</body>
+</html>
