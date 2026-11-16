@@ -35,7 +35,7 @@ button{font:inherit;color:inherit}
 .gate{display:flex;align-items:center;gap:14px;font:700 13px/1 var(--mono);letter-spacing:.2em;text-transform:uppercase;color:var(--sodium)}
 .gate::before{content:"";width:28px;height:1px;background:var(--amber)}
 .gate .n{color:var(--faint);font-weight:400}
-.mega{font:800 clamp(64px,13vw,210px)/.84 var(--display);text-transform:uppercase;letter-spacing:-.035em}
+.mega{font:800 clamp(40px,10vw,150px)/.84 var(--display);text-transform:uppercase;letter-spacing:-.035em}
 .mega .dot,.h2 .dot{color:var(--amber)}
 .h2{font:800 clamp(44px,6.4vw,104px)/.86 var(--display);text-transform:uppercase;letter-spacing:-.03em}
 .lead{color:var(--muted);max-width:42ch;font-size:19px}
@@ -107,14 +107,16 @@ button{font:inherit;color:inherit}
 /* 02 reveal: full-height macro, one massive line */
 .reveal{background:#000;padding:0}
 .reveal-stage{position:relative;height:var(--screen);overflow:hidden;display:grid;place-items:center}
-.reveal-word{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;white-space:nowrap;z-index:1;
-  font:800 clamp(80px,17.5vw,260px)/.8 var(--display);letter-spacing:-.05em;text-transform:uppercase;color:var(--white)}
+.reveal-word{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);text-align:center;white-space:nowrap;z-index:1;
+  font:800 clamp(60px,9.4vw,150px)/.8 var(--display);letter-spacing:-.05em;text-transform:uppercase;color:var(--white)}
 .reveal-word .dot{color:var(--amber)}
 .reveal-img{position:relative;z-index:2;height:100%;aspect-ratio:781/1400}
 .reveal-img img{width:100%;height:100%;object-fit:cover;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
-.reveal-over{position:absolute;inset:0;z-index:3;display:grid;place-items:center;pointer-events:none}
-.reveal-over span{font:800 clamp(80px,17.5vw,260px)/.8 var(--display);letter-spacing:-.05em;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(245,243,238,.55);transform:translateY(-8%);white-space:nowrap}
+.reveal-over{position:absolute;left:0;right:0;top:50%;transform:translateY(-50%);z-index:3;text-align:center;pointer-events:none;white-space:nowrap;
+  font:800 clamp(60px,9.4vw,150px)/.8 var(--display);letter-spacing:-.05em;text-transform:uppercase;color:transparent;-webkit-text-stroke:1.5px rgba(245,243,238,.6)}
+.reveal-over .dot{-webkit-text-stroke-color:var(--amber)}
+br.m{display:none}
 .reveal-cap{background:#000;padding:56px 0 var(--s1)}
 .reveal-cap .wrap{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;border-top:1px solid var(--line);padding-top:40px}
 .reveal-cap .big{font:600 24px/1.3 var(--body);grid-column:span 2;max-width:30ch}
@@ -137,8 +139,8 @@ button{font:inherit;color:inherit}
 .col .ph{aspect-ratio:3/4;overflow:hidden;background:#f2f2f0;border-radius:2px}
 .col .ph img{width:100%;height:100%;object-fit:cover;object-position:50% 45%;transform:scale(1.18);transition:transform .5s}
 .col:hover .ph img{transform:scale(1.24)}
-.col b{display:flex;align-items:center;gap:12px;margin-top:20px;font:800 clamp(30px,3.2vw,48px)/1 var(--display);text-transform:uppercase;letter-spacing:-.02em}
-.col b i{width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.col b{display:flex;align-items:center;gap:12px;margin-top:20px;font:800 clamp(22px,2.7vw,40px)/1 var(--display);text-transform:uppercase;letter-spacing:-.02em}
+.col b i{flex:none;width:18px;height:18px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
 .col .buy{display:flex;justify-content:space-between;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font:700 14px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .col:hover .buy{color:var(--sodium)}
 .help{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:var(--s3);padding-top:40px;border-top:1px solid var(--line)}
@@ -147,8 +149,9 @@ button{font:inherit;color:inherit}
 
 /* 04 fare: big type */
 .fare{background:var(--deep)}
-.fare .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:var(--s3);align-items:center}
-.fare .mega{font-size:clamp(120px,22vw,340px);letter-spacing:-.06em;line-height:.8;margin-top:24px}
+.fare-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);gap:var(--s3);align-items:start;margin-top:var(--s3)}
+.fare .mega{font-size:clamp(84px,20vw,300px);letter-spacing:-.06em;line-height:.8;margin-top:24px}
+.fare .note{margin-top:0}
 .fare-list{list-style:none;border-top:1px solid var(--line)}
 .fare-list li{display:flex;justify-content:space-between;gap:20px;padding:22px 0;border-bottom:1px solid var(--line);font:700 16px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase}
 .fare-list li span{color:var(--sodium)}
@@ -232,7 +235,7 @@ button{font:inherit;color:inherit}
 /* ---------- responsive ---------- */
 @media (max-width:1100px){
   .hero-foot{grid-template-columns:1fr}
-  .sec-head,.fare .wrap,.ask .wrap{grid-template-columns:1fr}
+  .sec-head,.fare-body,.ask .wrap{grid-template-columns:1fr}
   .cols{grid-template-columns:repeat(2,minmax(0,1fr))}
   .help,.gift-text,.prob-grid{grid-template-columns:1fr 1fr}
 }
@@ -247,7 +250,8 @@ button{font:inherit;color:inherit}
   .hero-img::after{background:linear-gradient(0deg,var(--night) 0%,rgba(7,9,15,0) 34%)}
   .hero .wrap{padding-top:0;padding-bottom:var(--s3)}
   .hero .gate{display:none}
-  .h1{font-size:21.5vw;margin-top:-19vw;position:relative}
+  .h1{font-size:16vw;margin-top:-14vw;position:relative}
+  .hero-foot>*,.hero-cta{min-width:0;width:100%}
   .hero-foot{margin-top:28px;gap:28px}
   .pain{font-size:22px}
   .pain span{font-size:16px}
@@ -260,14 +264,15 @@ button{font:inherit;color:inherit}
   .trustrow span{padding:10px 14px;border:1px solid var(--line);border-radius:40px}
   .gate{font-size:13px}
   .lead{font-size:17px}
-  .mega{font-size:19vw}
+  .mega{font-size:10.2vw}
   .h2{font-size:clamp(44px,13vw,64px)}
   .problem .flaps{font-size:4.6vw}
   .prob-grid,.help,.gift-text{grid-template-columns:1fr;gap:28px}
   .reveal-stage{height:auto;aspect-ratio:781/1100}
   .reveal-img{height:100%;width:100%;aspect-ratio:auto}
   .reveal-img img{-webkit-mask-image:none;mask-image:none}
-  .reveal-word,.reveal-over span{font-size:24vw}
+  .reveal-word{font-size:16vw;white-space:normal}
+  br.m{display:inline}
   .reveal-word{top:auto;bottom:8%;transform:none}
   .reveal-over{display:none}
   .reveal-word{z-index:3;text-shadow:0 6px 30px rgba(0,0,0,.6)}
@@ -276,13 +281,14 @@ button{font:inherit;color:inherit}
   .reveal-cap .big{grid-column:auto;font-size:20px}
   .lineup-bleed{height:auto;aspect-ratio:4/5}
   .lineup-bleed .wrap{padding-top:40px}
-  .lineup-bleed .h2{font-size:13vw}
+  .lineup-bleed .h2{font-size:10.4vw}
   .colours .intro{display:block}
   .colours .intro .lead{margin-top:16px}
   .cols{gap:12px}
-  .col b{font-size:28px;margin-top:14px}
+  .col b{font-size:21px;margin-top:14px;gap:8px}
+  .col b i{width:12px;height:12px}
   .col .buy{font-size:13px}
-  .fare .mega{font-size:44vw}
+  .fare .mega{font-size:21vw}
   .fare-list li{font-size:14px}
   .fare-list li.t{font-size:17px}
   .fare .btn,.gift-cta .btn{width:100%}
@@ -368,9 +374,9 @@ button{font:inherit;color:inherit}
 <!-- 02 REVEAL -->
 <section class="reveal" id="reveal" aria-labelledby="s2">
   <div class="reveal-stage">
-    <h2 class="reveal-word" id="s2">Cards up<span class="dot">.</span></h2>
+    <h2 class="reveal-word" id="s2">Cards <br class="m">up<span class="dot">.</span></h2>
     <figure class="reveal-img"><img src="img/cat-pdp-black-1.jpg" width="781" height="1400" alt="Macro: the black Specta with its cards risen in a stepped stack" loading="lazy"></figure>
-    <div class="reveal-over" aria-hidden="true"><span>Cards up.</span></div>
+    <div class="reveal-over" aria-hidden="true">Cards up<span class="dot">.</span></div>
   </div>
   <div class="reveal-cap">
     <div class="wrap">
@@ -413,11 +419,9 @@ button{font:inherit;color:inherit}
 <!-- 04 FARE -->
 <section class="sec fare" aria-labelledby="s4">
   <div class="wrap">
-    <div>
-      <p class="gate">The fare <span class="n">04 / 07</span></p>
-      <h2 class="mega" id="s4">€60<span class="dot">.</span></h2>
-    </div>
-    <div>
+    <p class="gate">The fare <span class="n">04 / 07</span></p>
+    <h2 class="mega" id="s4">€60<span class="dot">.</span></h2>
+    <div class="fare-body">
       <ul class="fare-list">
         <li>Specta cardholder <span>€60</span></li>
         <li>Shipping in the EU <span>Included</span></li>
@@ -425,8 +429,8 @@ button{font:inherit;color:inherit}
         <li>30-day returns <span>Included</span></li>
         <li class="t">Total <span>€60</span></li>
       </ul>
-      <p class="note">One price for every colour. No codes, no "was" price.</p>
-      <a class="btn" href="#colours">Choose a colour · €60 <span class="arr">→</span></a>
+      <div><p class="note">One price for every colour. No codes, no "was" price.</p>
+      <a class="btn" href="#colours">Choose a colour · €60 <span class="arr">→</span></a></div>
     </div>
   </div>
 </section>
