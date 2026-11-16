@@ -63,8 +63,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero .big{position:absolute;font-size:18vw;line-height:.8;white-space:nowrap;color:var(--ink)}
 .hero .big.l1{left:calc(var(--gut) - .04em);top:84px}
 .hero .big.l2{right:calc(var(--gut) - .02em);bottom:76px}
-.hero .dot{color:var(--paper);display:inline-block}
-.hero .pd{position:absolute;right:var(--gut);top:110px;font-size:clamp(28px,3.1vw,46px);text-align:right}
+.hero .dot{color:var(--ink);display:inline-block}
+.hero .pd{position:absolute;right:var(--gut);top:calc(84px + 18vw*.8 + 40px);font-size:clamp(28px,3.1vw,46px);text-align:right}
 .hero .pd small{display:block;font:600 12px/1.2 var(--ui);letter-spacing:.14em;margin-bottom:14px}
 .wallet{position:absolute;z-index:2;left:50%;top:50%;width:min(397px,30vw);transform:translate(-46%,-50%) rotate(0deg);filter:drop-shadow(0 40px 40px rgba(60,18,6,.38))}
 .wallet img{width:100%}
@@ -73,12 +73,12 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero-copy{bottom:auto;top:calc(84px + 18vw*.8 + 40px)}
 .hero-copy p{font:500 18px/1.42 var(--ui);margin-bottom:26px;color:var(--ink)}
 .hero-copy .fine{font:500 13px/1.4 var(--ui);margin:14px 0 0;letter-spacing:.02em}
-.hot{position:absolute;z-index:4;left:calc(50% + min(150px,11vw));top:calc(50% - min(60px,4.5vw))}
+.hot{position:absolute;z-index:4;left:calc(50% - min(110px,8vw));top:calc(50% + min(150px,11vw))}
 .hot .pin{width:22px;height:22px;border-radius:50%;background:var(--paper);box-shadow:0 0 0 6px rgba(244,241,236,.35);position:relative}
 .hot .pin::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:2px solid var(--paper);animation:ping 2.4s var(--ease) infinite}
 @keyframes ping{0%{transform:scale(.7);opacity:1}80%,100%{transform:scale(1.9);opacity:0}}
-.hot .tag{position:absolute;left:38px;top:-14px;background:var(--paper);padding:12px 16px 13px;white-space:nowrap;text-decoration:none;display:block;box-shadow:0 10px 30px rgba(40,12,4,.18)}
-.hot .tag::before{content:"";position:absolute;left:-16px;top:24px;width:16px;height:1px;background:var(--paper)}
+.hot .tag{position:absolute;right:38px;top:-14px;background:var(--paper);padding:12px 16px 13px;white-space:nowrap;text-decoration:none;display:block;box-shadow:0 10px 30px rgba(40,12,4,.18)}
+.hot .tag::before{content:"";position:absolute;right:-16px;top:24px;width:16px;height:1px;background:var(--paper)}
 .hot .tag b{display:block;font:700 13px/1.2 var(--ui);letter-spacing:.06em;text-transform:uppercase}
 .hot .tag span{font:500 13px/1.3 var(--ui);color:var(--muted)}
 .hero-sw{position:absolute;z-index:3;left:var(--gut);bottom:76px;display:flex;gap:10px;align-items:center}
@@ -171,7 +171,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .poster{position:relative;width:100%;max-width:460px;justify-self:end}
 .poster img{width:100%;box-shadow:0 40px 80px rgba(0,0,0,.5)}
 .poster .credit{font:500 12px/1.3 var(--ui);color:var(--muted-inv);margin-top:12px}
-.search{position:absolute;left:-150px;bottom:150px;width:min(470px,calc(100vw - 32px));background:#fff;color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.45);z-index:2}
+.search{position:absolute;left:-380px;bottom:56px;width:min(470px,calc(100vw - 32px));background:#fff;color:var(--ink);box-shadow:0 24px 60px rgba(0,0,0,.45);z-index:2}
 .search .bar{display:flex;align-items:center;gap:14px;height:62px;padding:0 20px;border-bottom:1px solid var(--line)}
 .search .bar svg{width:20px;height:20px;flex:none}
 .search .q{font:500 17px/1 var(--ui);white-space:nowrap;overflow:hidden}
@@ -254,7 +254,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .buy h2{font-size:clamp(64px,10vw,160px)}
 .buy h2 .dot{color:var(--paper);transform:none;animation:none}
 .buy .lead{font:500 19px/1.45 var(--ui);max-width:470px;margin:28px 0 34px}
-.buy-prod{justify-self:center;position:relative;width:min(300px,60vw)}
+.buy-prod{justify-self:center;position:relative;width:min(397px,60vw)}
 .buy-prod img{width:100%;filter:drop-shadow(0 34px 34px rgba(60,18,6,.35))}
 .picker{border:0;margin-bottom:22px}
 .picker legend{margin-bottom:14px}
@@ -294,8 +294,7 @@ footer{background:var(--ink);color:var(--paper)}
 .f-bot a{text-decoration:none}
 
 /* reveal (below the fold only) */
-.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
-.rv.in{opacity:1;transform:none}
+
 
 /* ---------- phone ---------- */
 @media (max-width:760px){
@@ -315,7 +314,15 @@ footer{background:var(--ink);color:var(--paper)}
   .hero .ph-pd{display:block;font-size:7.4vw;margin-bottom:12px}
   .hero-copy{position:static;max-width:none;padding:22px 16px 28px}
   .hero-copy p{color:var(--muted-inv);font-size:16px;margin-bottom:20px}
-  .hero-copy .btn{width:100%}
+  .hero-copy .btn{width:100%;background:var(--paper);color:var(--ink)}
+  .hero .wipe{clip-path:none;animation:none}
+  .hero .dot{color:var(--terra);transform:none;animation:none}
+  .look figcaption{flex-direction:column;gap:2px}
+  .look .shopbox .btn{width:100%;padding:0 10px;font-size:12px;letter-spacing:.06em;height:50px}
+  .look .shopbox .btn .ar{display:none}
+  .picker .opts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .picker .pill{padding:0 6px;gap:6px;font-size:13px;justify-content:center}
+  .picker .pill .sw{width:16px;height:16px}
   .hero-copy .fine{color:var(--muted-inv)}
   .hero .tape{position:static}
   .cols-head{grid-template-columns:1fr;gap:14px;padding:72px 16px 32px}
@@ -422,8 +429,8 @@ footer{background:var(--ink);color:var(--paper)}
 <!-- 2 COLOURS (M8) -->
 <section id="colours" aria-labelledby="col-h">
   <div class="cols-head">
-    <h2 class="d rv" id="col-h">Which one<br>is yours?</h2>
-    <p class="rv">Four colours of genuine leather with a Saffiano finish. <b>A, B, C or D. Every one is €60.</b></p>
+    <h2 class="d" id="col-h">Which one<br>is yours?</h2>
+    <p>Four colours of genuine leather with a Saffiano finish. <b>A, B, C or D. Every one is €60.</b></p>
   </div>
   <div class="tiles">
     <a class="tile t-black" id="c-black" href="/products/specta?variant=black">
@@ -458,9 +465,9 @@ footer{background:var(--ink);color:var(--paper)}
   <div class="dig-a inv">
     <div>
       <p class="lab" style="color:var(--muted-inv);margin-bottom:22px">Before</p>
-      <h2 class="d rv" id="dig-h">Still<br>digging<em>?</em></h2>
+      <h2 class="d" id="dig-h">Still<br>digging<em>?</em></h2>
     </div>
-    <svg class="flat rv" viewBox="0 0 330 300" fill="none" aria-hidden="true">
+    <svg class="flat" viewBox="0 0 330 300" fill="none" aria-hidden="true">
       <!-- a flat stack: every card flush, only the top one reachable -->
       <rect x="40" y="70" width="250" height="210" rx="16" stroke="#F4F1EC" stroke-width="10"/>
       <path d="M40 120h250" stroke="#F4F1EC" stroke-width="10"/>
@@ -468,14 +475,14 @@ footer{background:var(--ink);color:var(--paper)}
       <path d="M150 20v-2M176 26l6-8M124 26l-6-8" stroke="#B9643A" stroke-width="8" stroke-linecap="round"/>
       <text x="165" y="214" text-anchor="middle" fill="#B9643A" font-family="Archivo" font-stretch="125%" font-weight="800" font-size="72">?</text>
     </svg>
-    <p class="last rv"><b>Last seen: the bottom of your wallet.</b> One card on top, the rest somewhere underneath.</p>
+    <p class="last"><b>Last seen: the bottom of your wallet.</b> One card on top, the rest somewhere underneath.</p>
   </div>
   <div class="dig-b">
     <div>
       <p class="lab" style="margin-bottom:22px">After · one press</p>
-      <h3 class="d rv">Every card.<br>One press.</h3>
+      <h3 class="d">Every card.<br>One press.</h3>
     </div>
-    <figure class="rv"><img src="img/studio-navy-front-cards-up.jpg" width="1100" height="1100" loading="lazy" alt="Navy Specta with seven cards risen in a stepped stack, every edge showing."></figure>
+    <figure><img src="img/studio-navy-front-cards-up.jpg" width="1100" height="1100" loading="lazy" alt="Navy Specta with seven cards risen in a stepped stack, every edge showing."></figure>
     <p class="cap">Push down on the side ledge and up to seven cards rise in a stepped stack.</p>
   </div>
 </section>
@@ -483,17 +490,17 @@ footer{background:var(--ink);color:var(--paper)}
 <!-- 4 LOOKBOOK -->
 <section class="look" aria-labelledby="look-h">
   <div class="c1">
-    <h2 class="d rv" id="look-h">Out and<br>about.</h2>
-    <p class="intro rv">A cardholder for the front pocket, the café table and the walk home. Shown here in all four colours.</p>
-    <figure class="rv"><img src="img/cat-life-1.jpg" width="1127" height="1400" loading="lazy" alt="Man in a cream sweater holding a black Specta with cards up."><figcaption>Every card. One press. <span>Black</span></figcaption></figure>
+    <h2 class="d" id="look-h">Out and<br>about.</h2>
+    <p class="intro">A cardholder for the front pocket, the café table and the walk home. Shown here in all four colours.</p>
+    <figure><img src="img/cat-life-1.jpg" width="1127" height="1400" loading="lazy" alt="Man in a cream sweater holding a black Specta with cards up."><figcaption>Every card. One press. <span>Black</span></figcaption></figure>
   </div>
   <div class="c2">
-    <figure class="rv"><img src="img/cat-life-3.jpg" width="1127" height="1400" loading="lazy" alt="Brown Specta sliding into a front trouser pocket."><figcaption>Front pocket. <span>Brown</span></figcaption></figure>
-    <figure class="rv"><img src="img/cat-about-3.jpg" width="1127" height="1400" loading="lazy" alt="All four Specta colours lined up in a car boot at golden hour."><figcaption>All four. <span>Black · Grey · Navy · Brown</span></figcaption></figure>
+    <figure><img src="img/cat-life-3.jpg" width="1127" height="1400" loading="lazy" alt="Brown Specta sliding into a front trouser pocket."><figcaption>Front pocket. <span>Brown</span></figcaption></figure>
+    <figure><img src="img/cat-about-3.jpg" width="1127" height="1400" loading="lazy" alt="All four Specta colours lined up in a car boot at golden hour."><figcaption>All four. <span>Black · Grey · Navy · Brown</span></figcaption></figure>
   </div>
   <div class="c3">
-    <figure class="rv"><img src="img/cat-life-5.jpg" width="1127" height="1400" loading="lazy" alt="Black Specta tossed above an open hand on a city street."><figcaption>Out the door. <span>Black</span></figcaption></figure>
-    <div class="shopbox rv">
+    <figure><img src="img/cat-life-5.jpg" width="1127" height="1400" loading="lazy" alt="Black Specta tossed above an open hand on a city street."><figcaption>Out the door. <span>Black</span></figcaption></figure>
+    <div class="shopbox">
       <p>One product. Four colours. One price, with free shipping and the gift box included.</p>
       <a class="btn" href="#buy">Shop Specta — €60 <span class="ar">→</span></a>
       <p class="credit">Campaign imagery.</p>
@@ -505,8 +512,8 @@ footer{background:var(--ink);color:var(--paper)}
 <section class="bill inv" aria-labelledby="bill-h">
   <div>
     <p class="lab" style="color:var(--muted-inv);margin-bottom:22px">The campaign</p>
-    <h2 class="d rv" id="bill-h">Looking<br>for this<em>?</em></h2>
-    <p class="rv">A wallet where you can see every card. Genuine leather, Saffiano finish, four colours, one price.</p>
+    <h2 class="d" id="bill-h">Looking<br>for this<em>?</em></h2>
+    <p>A wallet where you can see every card. Genuine leather, Saffiano finish, four colours, one price.</p>
     <a class="btn btn--paper" href="#buy">Shop Specta — €60 <span class="ar">→</span></a>
   </div>
   <div class="poster">
@@ -527,9 +534,9 @@ footer{background:var(--ink);color:var(--paper)}
 <!-- 6 GIFT (M7) -->
 <section class="gift inv" id="gift" aria-labelledby="gift-h">
   <p class="lab" style="color:var(--muted-inv);margin-bottom:24px">For someone else</p>
-  <h2 class="d rv" id="gift-h">Ready to<br>give<span class="dot2">.</span></h2>
+  <h2 class="d" id="gift-h">Ready to<br>give<span class="dot2">.</span></h2>
   <div class="gift-grid">
-    <div class="recipe rv">
+    <div class="recipe">
       <div class="stamp">Ready<br>to give</div>
       <p class="lab">Recipe card</p>
       <h3 class="d">Recipe for<br>a good gift</h3>
@@ -546,11 +553,11 @@ footer{background:var(--ink);color:var(--paper)}
         <li>Hand it over. Watch them push down.</li>
       </ol>
     </div>
-    <div class="gift-mood rv">
+    <div class="gift-mood">
       <img src="img/cat-gift-1.jpg" width="1127" height="1400" loading="lazy" alt="Two hands holding a black Specta with cards up in warm amber light.">
       <p class="credit">Campaign imagery.</p>
     </div>
-    <div class="gift-box rv">
+    <div class="gift-box">
       <div class="print"><img src="img/studio-black-gift-box.jpg" width="1100" height="1100" loading="lazy" alt="The real Specta gift box, open, with the black cardholder inside."></div>
       <p><b>The real box.</b> Every Specta ships in this gift box. It's included in the €60, like the shipping.</p>
       <a class="btn btn--paper" href="#buy">Shop a gift — €60 <span class="ar">→</span></a>
@@ -565,11 +572,11 @@ footer{background:var(--ink);color:var(--paper)}
   </div>
   <div class="maths-wrap">
     <div class="maths">
-      <figure class="rv"><img src="img/hp-saffiano-four-colours.jpg" width="1100" height="1100" loading="lazy" alt="Four Saffiano leathers fanned out: grey, brown, navy and black."></figure>
+      <figure><img src="img/hp-saffiano-four-colours.jpg" width="1100" height="1100" loading="lazy" alt="Four Saffiano leathers fanned out: grey, brown, navy and black."></figure>
       <div>
-        <h2 class="d rv" id="maths-h">The maths<span style="color:var(--terra)">.</span></h2>
-        <p class="sub rv">No codes, no add-ons at checkout. This is the whole bill.</p>
-        <div class="receipt rv" role="table" aria-label="Price breakdown">
+        <h2 class="d" id="maths-h">The maths<span style="color:var(--terra)">.</span></h2>
+        <p class="sub">No codes, no add-ons at checkout. This is the whole bill.</p>
+        <div class="receipt" role="table" aria-label="Price breakdown">
           <div class="row" role="row"><span role="cell">Specta cardholder</span><span role="cell">60.00</span></div>
           <div class="row" role="row"><span role="cell">Shipping</span><span role="cell">Included</span></div>
           <div class="row" role="row"><span role="cell">Gift box</span><span role="cell">Included</span></div>
@@ -591,7 +598,7 @@ footer{background:var(--ink);color:var(--paper)}
 <!-- 8 ASK SPECTA (M11) -->
 <section class="ask inv" id="ask" aria-labelledby="ask-h">
   <div class="side">
-    <h2 class="d rv" id="ask-h">Ask<br>Specta.</h2>
+    <h2 class="d" id="ask-h">Ask<br>Specta.</h2>
     <p>Real questions, straight answers. Something missing? We reply within 2 working days.</p>
     <a class="link" href="/pages/contact">Contact us <span>→</span></a>
   </div>
@@ -609,7 +616,7 @@ footer{background:var(--ink);color:var(--paper)}
 <section class="buy" id="buy" aria-labelledby="buy-h">
   <div>
     <p class="lab" style="margin-bottom:22px">Specta pop-up cardholder</p>
-    <h2 class="d" id="buy-h">€60<span class="dot">.</span><br>All in.</h2>
+    <h2 class="d" id="buy-h">€60.<br>All in.</h2>
     <p class="lead">Genuine leather, Saffiano finish. Free shipping and the gift box included.</p>
     <form onsubmit="return false">
       <fieldset class="picker">
